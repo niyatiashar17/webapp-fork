@@ -46,7 +46,7 @@ async function postUserService(req, res) {
       firstName: user.firstName,
       lastName: user.lastName,
       account_created: user.account_created,
-      account_updated: userdetails.account_updated,
+      account_updated: user.account_updated,
     });
   } catch (error) {
     console.error(error);
