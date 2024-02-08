@@ -23,9 +23,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm install
 
-      - name: Intentionally Fail Workflow
-        run: exit 1
-
       - name: Print on Success
         if: ${{ success() }}
         run: echo "The workflow run was successfull."
