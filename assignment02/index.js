@@ -72,3 +72,5 @@ app.use("/v1/user", userrouter);
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+
+module.exports=app;
