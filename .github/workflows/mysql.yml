@@ -23,20 +23,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mysql-server
           sudo systemctl start mysql
-          mysql  -u${{ secrets.DB_USERNAME}}
-          -p${{ secrets.DB_PASSWORD}} -e "CREATE DATABASE IF NOT EXISTS Health;"
+          mysql -uroot
+          -proo -e "CREATE DATABASE IF NOT EXISTS Health;"
 
       - name: Run tests
         run: npm test
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          PORT: ${{ secrets.PORT }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE}}
+          DB_HOST: ${{secrets.DB_HOST}}
+          PORT: ${{secrets.PORT}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          DB_DATABASE: ${{secrets.DB_DATABASE}}
 
       - name: Delete database
         run: |
-          mysql -u${{ secrets.DB_USERNAME}}
-                -p${{ secrets.DB_PASSWORD}}
-                -e "DROP DATABASE ${{ secrets.DB_DATABASE}};" || exit 1
+          mysql -u${{secrets.DB_USERNAME}}
+                -p${{secrets.DB_PASSWORD}}
+                -e "DROP DATABASE ${{secrets.DB_DATABASE}};" || exit 1
