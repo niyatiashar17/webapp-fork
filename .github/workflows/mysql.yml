@@ -24,7 +24,7 @@ jobs:
           sudo apt-get install -y mysql-server
           sudo systemctl start mysql
           mysql -uroot
-          -proo -e "CREATE DATABASE IF NOT EXISTS Health;"
+          -proot -e "CREATE DATABASE IF NOT EXISTS Health;"
 
       - name: Run tests
         run: npm test
