@@ -1,4 +1,4 @@
-name: Node.js CI with MySQL
+name: mysql
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: mysql
     runs-on: ubuntu-latest
 
     steps:
