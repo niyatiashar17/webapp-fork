@@ -23,7 +23,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mysql-server
           sudo systemctl start mysql
-          mysql -h localhost -u root -p"root" -e "CREATE USER 'Niyati'@IDENTIFIED BY 'root'; GRANT ALL PRIVILEGES ON *.* TO 'Niyati'@'%';" || exit 1
+          mysql -h localhost -u root -p"root" -e "CREATE USER Niyati IDENTIFIED BY root; GRANT ALL PRIVILEGES ON *.* TO 'Niyati'@'%';" || exit 1
           mysql -h localhost -u root -p"root" -e 'CREATE DATABASE IF NOT EXISTS Health;' || exit 1
 
       - name: Run tests
