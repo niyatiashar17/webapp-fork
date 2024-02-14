@@ -1,9 +1,9 @@
 name: mysql
 
 on:
-    pull_request:
-        branches: [master]
-    workflow_dispatch:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,8 +23,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mysql-server
           sudo systemctl start mysql
-          mysql -uroot
-          -proot -e "CREATE DATABASE IF NOT EXISTS Health;"
+          mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY root;" -uroot || exit 1
+          mysql -e -uroot -proot "CREATE DATABASE IF NOT EXISTS Health;" || exit 1
 
       - name: Run tests
         run: npm test
