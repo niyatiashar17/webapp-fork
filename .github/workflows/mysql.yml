@@ -50,7 +50,9 @@ jobs:
           MYSQL_USERNAME: root
           SALT_ROUNDS: ${{secrets.SALT_ROUNDS}}
           PORT: ${{secrets.PORT}}
-        run: npm run test
+        run: |
+            bcd assignment02
+            npm run test
 
       - name: Delete Database
         run: |
