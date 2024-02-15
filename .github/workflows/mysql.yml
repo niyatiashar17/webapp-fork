@@ -20,11 +20,10 @@ jobs:
 
       - name: Install MySQL
         run: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-server
-          sudo systemctl start mysql
-          mysql -h localhost -u root -p"root" -e "CREATE USER Niyati IDENTIFIED BY root; GRANT ALL PRIVILEGES ON *.* TO 'Niyati'@'%';" || exit 1
-          mysql -h localhost -u root -p"root" -e 'CREATE DATABASE IF NOT EXISTS Health;' || exit 1
+            mysql -uroot -proot -e "CREATE USER 'Niyati'@'localhost' IDENTIFIED BY 'root';"
+            mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'Niyati'@'localhost';"
+            mysql -uroot -proot -e "FLUSH PRIVILEGES;"
+            mysql -uroot -proot -e "CREATE DATABASE Health;"
 
       - name: Run tests
         run: npm test
