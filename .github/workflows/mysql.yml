@@ -44,12 +44,11 @@ jobs:
 
       - name: Run tests
         env:
-          MYSQL_HOSTNAME: ${{secrets.MYSQL_HOSTNAME}}
-          MYSQL_PASSWORD: root
-          MYSQL_DATABASENAME: ${{secrets.MYSQL_DATABASENAME}}
-          MYSQL_USERNAME: root
-          SALT_ROUNDS: ${{secrets.SALT_ROUNDS}}
-          PORT: ${{secrets.PORT}}
+            DB_HOST: ${{secrets.DB_HOST}}
+            DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+            DB_DATABASE: ${{secrets.DB_DATABASE}}
+            DB_USERNAME: ${{secrets.DB_USERNAME}}
+            PORT: ${{secrets.PORT}}
         run: |
             cd assignment02
             npm run test
