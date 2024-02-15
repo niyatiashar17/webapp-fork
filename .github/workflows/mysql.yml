@@ -27,7 +27,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm install
+        run: |
+            cd assignment02
+            npm install
 
       - name: Install MySQL
         run: |
