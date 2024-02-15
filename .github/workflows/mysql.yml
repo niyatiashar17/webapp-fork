@@ -2,7 +2,7 @@ name: mysql
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -10,32 +10,46 @@ jobs:
     name: mysql
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+    # This keyword is used to define the build strategy for your workflow. In this case, it's specifying a matrix strategy
+    strategy:
+      # This sub-keyword defines a matrix build strategy, which allows you to run your job in multiple configurations
+      matrix:
+        # This sub-keyword defines the Node.js version to use for the job
+        node-version: [18.x]
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Use ${{matrix.node-version}} to setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Install MySQL
         run: |
-            mysql -uroot -proot -e "CREATE USER 'Niyati'@'localhost' IDENTIFIED BY 'root';"
-            mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'Niyati'@'localhost';"
-            mysql -uroot -proot -e "FLUSH PRIVILEGES;"
-            mysql -uroot -proot -e "CREATE DATABASE Health;"
+          sudo apt-get update
+          sudo apt-get install -y mysql-server
+
+      - name: Set up MySQL
+        run: |
+          sudo systemctl start mysql
+          mysql -uroot  -proot -e "CREATE DATABASE IF NOT EXISTS Health;" || exit 1
+          mysql -uroot  -proot -e "USE Health;" || exit 1
 
       - name: Run tests
-        run: npm test
         env:
-          DB_HOST: ${{secrets.DB_HOST}}
+          MYSQL_HOSTNAME: ${{secrets.MYSQL_HOSTNAME}}
+          MYSQL_PASSWORD: root
+          MYSQL_DATABASENAME: ${{secrets.MYSQL_DATABASENAME}}
+          MYSQL_USERNAME: root
+          SALT_ROUNDS: ${{secrets.SALT_ROUNDS}}
           PORT: ${{secrets.PORT}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          DB_USERNAME: ${{secrets.DB_USERNAME}}
-          DB_DATABASE: ${{secrets.DB_DATABASE}}
+        run: npm run test-mysql
 
-      - name: Delete database
+      - name: Delete Database
         run: |
-          mysql -u${{secrets.DB_USERNAME}}
-                -p${{secrets.DB_PASSWORD}}
-                -e "DROP DATABASE ${{secrets.DB_DATABASE}};" || exit 1
+          mysql -uroot  -proot -e "DROP DATABASE Health;" || exit 1
