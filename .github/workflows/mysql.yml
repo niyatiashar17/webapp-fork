@@ -51,7 +51,7 @@ jobs:
           SALT_ROUNDS: ${{secrets.SALT_ROUNDS}}
           PORT: ${{secrets.PORT}}
         run: |
-            bcd assignment02
+            cd assignment02
             npm run test
 
       - name: Delete Database
