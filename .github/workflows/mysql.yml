@@ -9,40 +9,37 @@ jobs:
   build:
     name: mysql
     runs-on: ubuntu-latest
-
-    # This keyword is used to define the build strategy for your workflow. In this case, it's specifying a matrix strategy
     strategy:
-      # This sub-keyword defines a matrix build strategy, which allows you to run your job in multiple configurations
       matrix:
-        # This sub-keyword defines the Node.js version to use for the job
         node-version: [18.x]
 
+    #Checking out code and setting up the Node.js environment
     steps:
-      - name: Check out code
+      - name: Check out the code
         uses: actions/checkout@v2
 
-      - name: Use ${{matrix.node-version}} to setup Node.js
+      - name: Use ${{matrix.node-version}} to setup the Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Install dependencies
+      #Installing dependencies
+      - name: Install all the required dependencies
         run: |
           cd assignment02
           npm install
-
+      #Installing MYSQL Server
       - name: Install MySQL
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-server
-
-      - name: Set up MySQL
+      # Setting up the MYSQL Server
+      - name: Set up the MySQL Server
         run: |
           sudo systemctl start mysql
           mysql -u${{secrets.DB_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "CREATE DATABASE IF NOT EXISTS ${{secrets.DB_DATABASE}};" || exit 1
           mysql -u${{secrets.DB_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "USE ${{secrets.DB_DATABASE}};" || exit 1
-
-      - name: Run tests
+      # Setting up the Run Tests environment
+      - name: Run all the given tests
         env:
           DB_HOST: ${{secrets.DB_HOST}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
@@ -52,7 +49,7 @@ jobs:
         run: |
           cd assignment02
           npm run test
-
+      #Deleting the database
       - name: Delete Database
         run: |
           mysql -u${{secrets.DB_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "DROP DATABASE ${{ secrets.DB_DATABASE }};" || exit 1
