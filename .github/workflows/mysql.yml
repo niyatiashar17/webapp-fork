@@ -1,4 +1,4 @@
-name: Mysql
+name: mysql
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Mysql
+    name: mysql
     runs-on: ubuntu-latest
 
     # This keyword is used to define the build strategy for your workflow. In this case, it's specifying a matrix strategy
