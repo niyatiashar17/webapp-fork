@@ -28,8 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-            cd assignment02
-            npm install
+          cd assignment02
+          npm install
 
       - name: Install MySQL
         run: |
@@ -44,14 +44,14 @@ jobs:
 
       - name: Run tests
         env:
-            DB_HOST: ${{secrets.DB_HOST}}
-            DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-            DB_DATABASE: ${{secrets.DB_DATABASE}}
-            DB_USERNAME: ${{secrets.DB_USERNAME}}
-            PORT: ${{secrets.PORT}}
+          DB_HOST: ${{secrets.DB_HOST}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          DB_DATABASE: ${{secrets.DB_DATABASE}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          PORT: ${{secrets.PORT}}
         run: |
-            cd assignment02
-            npm run test
+          cd assignment02
+          npm run test
 
       - name: Delete Database
         run: |
