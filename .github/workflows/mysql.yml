@@ -48,7 +48,7 @@ jobs:
           PORT: ${{secrets.PORT}}
         run: |
           cd assignment02
-          
+          npm run test
       #Deleting the database
       - name: Delete Database
         run: |
