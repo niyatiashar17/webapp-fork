@@ -22,7 +22,7 @@ jobs:
       - name: Run packer fmt
         run: |
           cd webapp-fork/api/packer
-          packer fmt -check packer.yml
+          packer fmt -check packer.json.pkr.hcl
           if [ $? -ne 0 ]; then
             echo "packer fmt has made changes to the packer template. Please run 'packer fmt' locally and commit the changes."
             exit 1
