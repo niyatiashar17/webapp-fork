@@ -25,7 +25,7 @@ jobs:
       #Installing dependencies
       - name: Install all the required dependencies
         run: |
-          cd assignment02
+          cd webapp-fork
           npm install
       #Installing MYSQL Server
       - name: Install MySQL
@@ -47,7 +47,7 @@ jobs:
           DB_USERNAME: ${{secrets.DB_USERNAME}}
           PORT: ${{secrets.PORT}}
         run: |
-          cd assignment02
+          cd webapp-fork
           npm run test
       #Deleting the database
       - name: Delete Database
