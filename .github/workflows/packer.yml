@@ -19,6 +19,11 @@ jobs:
           unzip packer.zip
           sudo mv packer /usr/local/bin/
 
+      - name: initialize  packer
+        run: |
+          cd webapp-fork/api/packer
+          packer init packer.json.pkr.hcl
+
       - name: Run packer fmt
         run: |
           cd webapp-fork/api/packer
