@@ -1,0 +1,38 @@
+name: Packer CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  packer-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Packer
+        run: |
+          curl -o packer.zip https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip
+          unzip packer.zip
+          sudo mv packer /usr/local/bin/
+
+      - name: Run packer fmt
+        run: |
+          cd packer
+          packer fmt -check packer.yml
+          if [ $? -ne 0 ]; then
+            echo "packer fmt has made changes to the packer template. Please run 'packer fmt' locally and commit the changes."
+            exit 1
+          fi
+
+      - name: Run packer validate
+        run: |
+          cd packer
+          packer validate packer.yml
+          if [ $? -ne 0 ]; then
+            echo "packer validate failed to validate the packer template. Please fix the template."
+            exit 1
+          fi
