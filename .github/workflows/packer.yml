@@ -21,7 +21,7 @@ jobs:
 
       - name: Run packer fmt
         run: |
-          cd webapp-fork/api
+          cd webapp-fork/api/packer
           packer fmt -check packer.yml
           if [ $? -ne 0 ]; then
             echo "packer fmt has made changes to the packer template. Please run 'packer fmt' locally and commit the changes."
@@ -30,7 +30,7 @@ jobs:
 
       - name: Run packer validate
         run: |
-          cd webapp-fork/api
+          cd webapp-fork/api/packer
           packer validate packer.yml
           if [ $? -ne 0 ]; then
             echo "packer validate failed to validate the packer template. Please fix the template."
