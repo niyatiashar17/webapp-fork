@@ -31,7 +31,7 @@ jobs:
       - name: Run packer validate
         run: |
           cd webapp-fork/api/packer
-          packer init
+          packer init webapp-fork/api/packer
           packer init -upgrade
           packer validate packer.json.pkr.hcl
 
