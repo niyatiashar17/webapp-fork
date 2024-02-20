@@ -31,9 +31,6 @@ jobs:
       - name: Run packer validate
         run: |
           cd webapp-fork/api/packer
-          packer init
-          packer init -upgrade
-          packer validate -debug packer.json.pkr.hcl
           packer validate packer.json.pkr.hcl
 
           if [ $? -ne 0 ]; then
