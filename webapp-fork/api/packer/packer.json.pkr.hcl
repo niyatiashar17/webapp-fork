@@ -69,12 +69,4 @@ build {
     destination = "/tmp/webapp.zip"
   }
 
-  provisioner "shell" {
-    scripts = ["./mysql.sh", "./nodejs.sh", "./permissions.sh", "./webapp-installation.sh"]
-    environment_vars = [
-      "MYSQL_PASSWORD=${var.MYSQL_PASSWORD}"
-    ]
-  }/
-
-
 }
