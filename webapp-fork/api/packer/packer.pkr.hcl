@@ -47,12 +47,12 @@ build {
   }
 
   provisioner "file"{
-    source = "/home/runner/work/webapp/webapp/webapp.zip"
+    source = "/home/runner/work/webapp/webapp/webapp-fork/api/webapp.zip"
     destination = "/tmp/webapp.zip"
   }
   provisioner "file"{
     source      = "./permission.sh"
-    destination = "/tmp/permission.sh"
+    destination = "/tmp/permissions.sh"
   }
 
   provisioner "shell" {
