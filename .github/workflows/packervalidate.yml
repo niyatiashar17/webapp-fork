@@ -58,7 +58,8 @@ jobs:
           cd webapp-fork/api/packer
           packer init .
 
-      - name: Build Packer image
+      - name: Build packer file
         run: |
+          FILE="packer.json.pkr.hcl"
           cd webapp-fork/api/packer
-          packer build -var "project_id=csye-6225-terraform-415001" -var "credentials=credential.json" .\packer.json.pkr.hcl
+          packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" $FILE || exit 1
