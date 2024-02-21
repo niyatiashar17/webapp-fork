@@ -38,4 +38,8 @@ build {
     inline = ["sudo useradd -r -s /usr/sbin/nologin nologinuser"]
   }
 
+  provisioner "shell" {
+    script = "local_user.sh"
+  }
+
 }
