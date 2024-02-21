@@ -36,7 +36,7 @@ jobs:
           PORT: ${{secrets.PORT}}
         run: |
           cd webapp-fork/api
-          npm run test-mysql
+          npm run test
 
       - name: Zip Node.js application
         run: |
