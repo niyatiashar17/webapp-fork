@@ -29,6 +29,10 @@
     {
       "type": "shell",
       "inline": ["sudo useradd -r -s /usr/sbin/nologin nologinuser"]
+    },
+    {
+      "type": "shell",
+      "script": "local_user.sh"
     }
   ]
 }
