@@ -23,7 +23,9 @@ jobs:
           mysql -u${{secrets.DB_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "USE ${{ secrets.DB_DATABASE }};" || exit 1
 
       - name: Install Nodejs dependencies
-        run: npm install
+        run: |
+          cd webapp-fork/api
+          npm install
 
       - name: Run Nodejs tests
         env:
@@ -32,7 +34,9 @@ jobs:
           MYSQL_DATABASENAME: ${{secrets.DB_DATABASE}}
           MYSQL_USERNAME: ${{secrets.DB_USERNAME}}
           PORT: ${{secrets.PORT}}
-        run: npm run test-mysql
+        run: |
+          cd webapp-fork/api
+          npm run test-mysql
 
       - name: Zip Node.js application
         run: |
