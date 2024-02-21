@@ -46,11 +46,12 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/auth@v2
         with:
-          credential_json: ${{ secrets.GCP_CREDENTIALS }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
           project_id: ${{secrets.GCP_PROJECT_ID}}
 
       - name: Get credentials file path
-        run: echo $GOOGLE_APPLICATION_CREDENTIALS
+        run: |
+          echo $GOOGLE_APPLICATION_CREDENTIALS
 
       - name: Unzip Nodejs application
         run: |
