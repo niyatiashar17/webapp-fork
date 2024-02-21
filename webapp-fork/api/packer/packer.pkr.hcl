@@ -51,8 +51,8 @@ build {
     destination = "/tmp/webapp.zip"
   }
   provisioner "file"{
-    source      = "./permissions.sh"
-    destination = "/tmp/permissions.sh"
+    source      = "./permission.sh"
+    destination = "/tmp/permission.sh"
   }
 
   provisioner "shell" {
