@@ -19,19 +19,18 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo systemctl start mysql
-          mysql -u${{secrets.MYSQL_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.DB_PASSWORD }};" || exit 1
-          mysql -u${{secrets.MYSQL_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "USE ${{ secrets.MYSQL_DATABASENAME }};" || exit 1
+          mysql -u${{secrets.DB_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.DB_PASSWORD }};" || exit 1
+          mysql -u${{secrets.DB_USERNAME}}  -p${{secrets.DB_PASSWORD}} -e "USE ${{ secrets.DB_DATABASE }};" || exit 1
 
       - name: Install Nodejs dependencies
         run: npm install
 
       - name: Run Nodejs tests
         env:
-          MYSQL_HOSTNAME: ${{secrets.MYSQL_HOSTNAME}}
+          MYSQL_HOSTNAME: ${{secrets.DB_HOST}}
           MYSQL_PASSWORD: ${{secrets.DB_PASSWORD}}
-          MYSQL_DATABASENAME: ${{secrets.MYSQL_DATABASENAME}}
-          MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
-          SALT_ROUNDS: ${{secrets.SALT_ROUNDS}}
+          MYSQL_DATABASENAME: ${{secrets.DB_DATABASE}}
+          MYSQL_USERNAME: ${{secrets.DB_USERNAME}}
           PORT: ${{secrets.PORT}}
         run: npm run test-mysql
 
