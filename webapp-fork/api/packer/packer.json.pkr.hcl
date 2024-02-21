@@ -50,19 +50,15 @@ build {
 
 
   provisioner "file" {
-    source      = "./mysql.sh"
-    destination = "/tmp/mysql.sh"
+    source      = "./install_mysql.sh"
+    destination = "/tmp/install_mysql.sh"
   }
 
   provisioner "file" {
-    source      = "./nodejs.sh"
-    destination = "/tmp/nodejs.sh"
+    source      = "./install_nodejs.sh"
+    destination = "/tmp/install_nodejs.sh"
   }
 
-  provisioner "file" {
-    source      = "./permissions.sh"
-    destination = "/tmp/permissions.sh"
-  }
 
   provisioner "file"{
     source = "/home/runner/work/webapp/webapp/webapp-fork.zip"
