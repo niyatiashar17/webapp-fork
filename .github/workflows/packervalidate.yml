@@ -43,6 +43,15 @@ jobs:
           cd webapp-fork/api
           npm run zip
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/auth@v2
+        with:
+          credential_json: ${{ secrets.GCP_CREDENTIALS }}
+          project_id: ${{secrets.GCP_PROJECT_ID}}
+
+      - name: Get credentials file path
+        run: echo $GOOGLE_APPLICATION_CREDENTIALS
+
       - name: Unzip Nodejs application
         run: |
           sudo unzip webapp-fork/api/webapp-fork.zip -d /home
