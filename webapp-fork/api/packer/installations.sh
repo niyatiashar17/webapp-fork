@@ -6,7 +6,7 @@ sudo unzip /tmp/webapp.zip -d /home/packer/webapp/
 cd /home/packer/webapp/
 sudo npm install
 sudo touch .env
-echo "MYSQL_HOSTNAME=localhost" | sudo tee -a .env
-echo "MYSQL_PASSWORD=Jaishreekrishna@1998" | sudo tee -a .env
-echo "MYSQL_DATABASENAME=assignment04" | sudo tee -a .env
-echo "MYSQL_USERNAME=root" | sudo tee -a .env
+echo "DB_HOST=localhost" | sudo tee -a .env
+echo "DB_PASSWORD=Jaishreekrishna@1998" | sudo tee -a .env
+echo "DB_DATABASENAME=assignment04" | sudo tee -a .env
+echo "DB_USERNAME=root" | sudo tee -a .env
