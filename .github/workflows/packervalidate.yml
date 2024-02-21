@@ -5,6 +5,7 @@ on:
     #types: [closed]
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   packer-checks:
@@ -20,9 +21,8 @@ jobs:
           cd webapp-fork/api
           npm run zip
 
-          
       - name: Unzip Nodejs application
-        run: |      
+        run: |
           sudo unzip webapp-fork/api/webapp-fork.zip -d /home
 
       - name: Install Packer
