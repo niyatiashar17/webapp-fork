@@ -43,6 +43,9 @@ jobs:
           cd webapp-fork/api
           npm run zip
 
+          echo $(pwd)
+          echo $(ls -la)
+
       - name: Set up Cloud SDK
         uses: google-github-actions/auth@v2
         with:
