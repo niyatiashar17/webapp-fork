@@ -3,8 +3,8 @@
     {
       "type": "googlecompute",
       "source_image": "centos-stream-8-v20240110",
-      "credentials_file": "csye-6225-414700-23f67299b684.json",
-      "project_id": "csye-6225-414700",
+      "credentials_file": "credential.json",
+      "project_id": "csye-6225-terraform-415001",
       "source_image_family": "centos-8-stream",
       "ssh_username": "dev",
       "zone": "us-east1-b",
@@ -28,9 +28,7 @@
     },
     {
       "type": "shell",
-      "inline": [
-        "sudo useradd -r -s /usr/sbin/nologin nologinuser"
-      ]
+      "inline": ["sudo useradd -r -s /usr/sbin/nologin nologinuser"]
     }
   ]
 }

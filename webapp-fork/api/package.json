@@ -7,7 +7,8 @@
   "scripts": {
     "test1": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "test": "mocha src/test/user.test.js --exit"
+    "test": "mocha src/test/user.test.js --exit",
+    "zip": "zip -r webapp-fork.zip . -x *.git* *node_modules* *.env*"
   },
   "author": "",
   "license": "ISC",
