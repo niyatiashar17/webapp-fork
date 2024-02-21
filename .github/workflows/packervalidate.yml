@@ -16,6 +16,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up MySQL
+        run: |
+          sudo systemctl start mysql
+          mysql -u${{secrets.MYSQL_USERNAME}}  -p${{secrets.MYSQL_ROOT_PASSWORD}} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.MYSQL_DATABASENAME }};" || exit 1
+          mysql -u${{secrets.MYSQL_USERNAME}}  -p${{secrets.MYSQL_ROOT_PASSWORD}} -e "USE ${{ secrets.MYSQL_DATABASENAME }};" || exit 1
+
+      - name: Install Nodejs dependencies
+        run: npm install
+
+      - name: Run Nodejs tests
+        env:
+          MYSQL_HOSTNAME: ${{secrets.MYSQL_HOSTNAME}}
+          MYSQL_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+          MYSQL_DATABASENAME: ${{secrets.MYSQL_DATABASENAME}}
+          MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
+          SALT_ROUNDS: ${{secrets.SALT_ROUNDS}}
+          PORT: ${{secrets.PORT}}
+        run: npm run test-mysql
+
       - name: Zip Node.js application
         run: |
           cd webapp-fork/api
@@ -34,10 +53,9 @@ jobs:
       - name: initialize  packer
         run: |
           cd webapp-fork/api/packer
-          packer init packer.json.pkr.hcl
+          packer init .
 
       - name: Build Packer image
         run: |
           cd webapp-fork/api/packer
-          packer build packer.json.pkr.hcl
           packer build -var "project_id=csye-6225-terraform-415001" -var "credentials=credential.json" .\setup.pkr.hcl
