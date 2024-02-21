@@ -53,10 +53,6 @@ jobs:
         run: |
           echo $GOOGLE_APP_CREDENTIALS
 
-      - name: Unzip Nodejs application
-        run: |
-          sudo unzip webapp-fork/api/webapp.zip -d /home
-
       - name: Install Packer
         run: |
           curl -o packer.zip https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip
