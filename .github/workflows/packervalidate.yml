@@ -15,6 +15,7 @@ jobs:
 
       - name: Zip Node.js application
         run: |
+          cd webapp-fork/api
           npm run zip
 
       - name: Install Packer
