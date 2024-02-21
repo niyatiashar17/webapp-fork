@@ -22,8 +22,7 @@ jobs:
 
       - name: Unzip Nodejs application
         run: |
-        
-          sudo unzip webapp-fork.zip -d /home
+          sudo unzip webapp-fork/api/webapp-fork.zip -d /home
 
       - name: Install Packer
         run: |
