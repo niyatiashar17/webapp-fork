@@ -27,7 +27,7 @@ jobs:
         run: |
           cd webapp-fork/api
           npm install
-      #Installing MYSQL Server
+      #Installing  Server
       - name: Install MySQL
         run: |
           sudo apt-get update
