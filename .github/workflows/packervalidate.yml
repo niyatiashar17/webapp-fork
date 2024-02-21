@@ -31,4 +31,5 @@ jobs:
 
       - name: Build Packer image
         run: |
+          cd webapp-fork/api/packer
           packer build packer.json.pkr.hcl
