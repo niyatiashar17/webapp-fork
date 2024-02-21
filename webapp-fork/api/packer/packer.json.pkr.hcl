@@ -60,6 +60,6 @@ build {
     environment_vars = [
       "MYSQL_PASSWORD=${var.MYSQL_PASSWORD}"
     ]
-  }/
+  }
 
 }
