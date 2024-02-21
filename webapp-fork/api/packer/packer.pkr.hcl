@@ -48,7 +48,7 @@ build {
 
   provisioner "file"{
     source = "/home/runner/work/webapp/webapp/webapp-fork.zip"
-    destination = "/tmp/webapp.zip"
+    destination = "/tmp/webapp-fork.zip"
   }
   provisioner "file"{
     source      = "./permissions.sh"
