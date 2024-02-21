@@ -36,24 +36,24 @@ build {
   }
 
 
-  provisioner "file" {
-    source      = "./install_mysql.sh"
-    destination = "/tmp/install_mysql.sh"
-  }
+  // provisioner "file" {
+  //   source      = "./install_mysql.sh"
+  //   destination = "/tmp/install_mysql.sh"
+  // }
 
-  provisioner "file" {
-    source      = "./install_nodejs.sh"
-    destination = "/tmp/install_nodejs.sh"
-  }
+  // provisioner "file" {
+  //   source      = "./install_nodejs.sh"
+  //   destination = "/tmp/install_nodejs.sh"
+  // }
 
   provisioner "file"{
     source = "/home/runner/work/webapp/webapp/webapp-fork/api/webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-  provisioner "file"{
-    source      = "./permission.sh"
-    destination = "/tmp/permissions.sh"
-  }
+  // provisioner "file"{
+  //   source      = "./permission.sh"
+  //   destination = "/tmp/permissions.sh"
+  // }
 
   provisioner "shell" {
     scripts = ["./install_mysql.sh", "./install_nodejs.sh", "./permission.sh", "./installations.sh"]
