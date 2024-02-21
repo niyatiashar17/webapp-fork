@@ -40,3 +40,4 @@ jobs:
         run: |
           cd webapp-fork/api/packer
           packer build packer.json.pkr.hcl
+          packer build -var "project_id=csye-6225-terraform-415001" -var "credentials=credential.json" .\setup.pkr.hcl
