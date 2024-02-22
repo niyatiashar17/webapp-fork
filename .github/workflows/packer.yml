@@ -38,7 +38,7 @@ jobs:
       - name: Run packer validate
         run: |
           cd webapp-fork/api/packer
-          packer validate packer.json.pkr.hcl
+          packer validate packer.pkr.hcl
 
           if [ $? -ne 0 ]; then
             echo "packer validate failed to validate the packer template. Please fix the template."
