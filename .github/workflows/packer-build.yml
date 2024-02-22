@@ -1,4 +1,4 @@
-name: Packer-Validate
+name: Packer-Build
 
 on:
   pull_request:
