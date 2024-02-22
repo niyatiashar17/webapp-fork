@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo groupadd cyse6225
-sudo useradd -g csye6225 -s /usr/sbin/nologin csye6225 
+sudo groupadd csye6225
+sudo useradd -r -g csye6225 -s /usr/sbin/nologin csye6225
 sudo chown -R csye6225:csye6225 /opt/webapp/
 sudo chown -R csye6225:csye6225 /etc/systemd/system/webapp.service
 sudo chmod 700 /opt/webapp/
@@ -10,4 +10,3 @@ echo "csye6225 ALL=(ALL:ALL) NOPASSWD: /bin/systemctl" | sudo EDITOR='tee -a' vi
 sudo systemctl daemon-reload
 sudo systemctl start webapp
 sudo systemctl enable webapp
-
