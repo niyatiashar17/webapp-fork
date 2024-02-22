@@ -8,7 +8,7 @@ packer build packer.json.pkr.hcl
 node index.js
 
 npm install (node_modules)  
- //change the folder name in index.js file
+ //change the folder name in index.js fil
 "../new_name/src/router/router"
 add : "start": "nodemon index.js" in scripts
 npm install dotenv --save (env read)
