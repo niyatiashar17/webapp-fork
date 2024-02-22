@@ -68,4 +68,4 @@ jobs:
         run: |
           FILE="packer.pkr.hcl"
           cd webapp-fork/api/packer
-          packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APP_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "PORT=${{secrets.PORT}}" -var "DB_HOST=${{secrets.DB_HOST}}" $FILE || exit 1
+          packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "PORT=${{secrets.PORT}}" -var "DB_HOST=${{secrets.DB_HOST}}" $FILE || exit 1
