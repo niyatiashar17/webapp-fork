@@ -36,15 +36,15 @@ build {
   }
 
 
-  // provisioner "file" {
-  //   source      = "./install_mysql.sh"
-  //   destination = "/tmp/install_mysql.sh"
-  // }
+  provisioner "file" {
+    source      = "./install_mysql.sh"
+    destination = "/tmp/install_mysql.sh"
+  }
 
-  // provisioner "file" {
-  //   source      = "./install_nodejs.sh"
-  //   destination = "/tmp/install_nodejs.sh"
-  // }
+  provisioner "file" {
+    source      = "./install_nodejs.sh"
+    destination = "/tmp/install_nodejs.sh"
+  }
 
   provisioner "file"{
     source = "/home/runner/work/webapp/webapp/webapp-fork/api/webapp.zip"
@@ -52,7 +52,7 @@ build {
   }
   // provisioner "file"{
   //   source      = "./permission.sh"
-  //   destination = "/tmp/permissions.sh"
+  //   destination = "/tmp/permission.sh"
   // }
 
   provisioner "shell" {
