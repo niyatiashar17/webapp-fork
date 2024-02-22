@@ -56,7 +56,7 @@ build {
   // }
 
   provisioner "shell" {
-    scripts = ["./install_nodejs.sh", "./install_mysql.sh", "./permission.sh", "./installations.sh"]
+    scripts = ["./install_nodejs.sh", "./install_mysql.sh", "./installations.sh","./service.sh","./permission.sh"]
     environment_vars = [
       "DB_PASSWORD=${var.DB_PASSWORD}"
     ]
