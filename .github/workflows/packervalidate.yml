@@ -51,7 +51,7 @@ jobs:
 
       - name: Get credentials file path
         run: |
-          echo $GOOGLE_APP_CREDENTIALS
+          echo $GOOGLE_APPLICATION_CREDENTIALS
 
       - name: Install Packer
         run: |
@@ -68,4 +68,4 @@ jobs:
         run: |
           FILE="packer.pkr.hcl"
           cd webapp-fork/api/packer
-          packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APP_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" $FILE || exit 1
+          packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATIONS_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" $FILE || exit 1
