@@ -24,7 +24,7 @@ jobs:
       - name: initialize  packer
         run: |
           cd webapp-fork/api/packer
-          packer init packer.json.pkr.hcl
+          packer init packer.pkr.hcl
 
       - name: Run packer fmt
         run: |
