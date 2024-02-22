@@ -8,7 +8,7 @@
     "test1": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
     "test": "mocha src/test/user.test.js --exit",
-    "zip": "zip -r webapp.zip . -x 'webapp-fork/api/node_modules' -x '.git/*' -x '.env'"
+    "zip": "zip -r archive.zip . -x \"**/node_modules/**\\*\""
   },
   "keywords": [
     "MySQL",
