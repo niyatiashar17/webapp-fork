@@ -65,7 +65,7 @@ jobs:
       - name: initialize  packer
         run: |
           cd webapp-fork/api/packer
-          packer init .
+          packer init packer.pkr.hcl
 
       - name: Build packer file
         run: |
