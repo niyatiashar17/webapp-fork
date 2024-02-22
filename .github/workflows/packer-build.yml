@@ -2,14 +2,14 @@ name: Packer-Build
 
 on:
   pull_request:
-    # types: [closed]
+    types: [closed]
     branches:
       - main
   workflow_dispatch:
 
 jobs:
   packer-build-checks:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
