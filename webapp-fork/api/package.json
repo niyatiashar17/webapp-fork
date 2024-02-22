@@ -10,7 +10,11 @@
     "test": "mocha src/test/user.test.js --exit",
     "zip": "zip -r webapp.zip . -x \"webapp-fork/api/node_modules/*\" -x \".git/*\" -x \".env\""
   },
-  "author": "",
+  "keywords": [
+    "MySQL",
+    "Node.js"
+  ],
+  "author": "Niyati",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
