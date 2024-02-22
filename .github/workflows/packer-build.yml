@@ -40,6 +40,7 @@ jobs:
 
       - name: Zip Node.js application
         run: |
+          cd webapp-fork/api
           npm run zip
           echo $(pwd)
           echo $(ls-la)
