@@ -36,15 +36,15 @@ build {
   }
 
 
-  provisioner "file" {
-    source      = "./install_mysql.sh"
-    destination = "/tmp/install_mysql.sh"
-  }
+  // provisioner "file" {
+  //   source      = "./install_mysql.sh"
+  //   destination = "/tmp/install_mysql.sh"
+  // }
 
-  provisioner "file" {
-    source      = "./install_nodejs.sh"
-    destination = "/tmp/install_nodejs.sh"
-  }
+  // provisioner "file" {
+  //   source      = "./install_nodejs.sh"
+  //   destination = "/tmp/install_nodejs.sh"
+  // }
 
   provisioner "file" {
     source      = "/home/runner/work/webapp/webapp/webapp-fork/api/webapp.zip"
@@ -56,7 +56,7 @@ build {
   // }
 
   provisioner "shell" {
-    scripts = ["./install_mysql.sh", "./install_nodejs.sh", "./permission.sh", "./installations.sh"]
+    scripts = ["./install_nodejs.sh", "./permission.sh", "./installations.sh"]
     environment_vars = [
       "DB_PASSWORD=${var.DB_PASSWORD}"
     ]
