@@ -9,11 +9,11 @@ After=network.target
 Type=simple
 User=csye6225
 Group=csye6225
-ENVIRONMENT=DB_PASSWORD='$DB_PASSWORD'
-ENVIRONMENT=DB_HOST='$DB_HOST'
-ENVIRONMENT=DB_DATABASE='$DB_DATABASE'
-ENVIRONMENT=DB_USERNAME='$DB_USERNAME'
-ENVIRONMENT=PORT='$PORT'
+Environment=DB_PASSWORD='$DB_PASSWORD'
+Environment=DB_HOST='$DB_HOST'
+Environment=DB_DATABASE='$DB_DATABASE'
+Environment=DB_USERNAME='$DB_USERNAME'
+Environment=PORT='$PORT'
 WorkingDirectory=/opt/webapp/webapp-fork/api
 ExecStart=/usr/bin/node /opt/webapp/webapp-fork/api/index.js
 Restart=on-failure
