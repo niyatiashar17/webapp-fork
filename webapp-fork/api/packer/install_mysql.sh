@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo dnf update -y
+
 sudo dnf install -y mysql-server
 sudo systemctl start mysqld
 sudo systemctl enable mysqld
