@@ -25,8 +25,8 @@ jobs:
 
       - name: Install Packer
         run: |
-          wget https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip
-          unzip -o packer_1.7.2_linux_amd64.zip
+          curl -o packer.zip https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip
+          unzip packer.zip
           sudo mv packer /usr/local/bin/
 
       - name: Zip Node.js application
@@ -36,12 +36,12 @@ jobs:
           echo $(ls-la)
       - name: initialize  packer
         run: |
-          cd packer
+          cd pkr
           packer init packer.pkr.hcl
 
       - name: Run packer fmt
         run: |
-          cd packer
+          cd pkr
           packer fmt -check packer.pkr.hcl
           if [ $? -ne 0 ]; then
             echo "packer fmt has made changes to the packer template. Please run 'packer fmt' locally and commit the changes."
@@ -51,7 +51,7 @@ jobs:
       - name: Run packer validate
         run: |
           FILE="packer.pkr.hcl"
-          cd packer/
+          cd pkr
           packer validate -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "PORT=${{secrets.PORT}}" -var "DB_HOST=${{secrets.DB_HOST}}" $FILE || exit 1
           if [ $? -ne 0 ]; then
               echo "packer validate failed to validate the packer template. Please fix the template."
