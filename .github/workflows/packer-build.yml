@@ -24,7 +24,6 @@ jobs:
 
       - name: Install Nodejs dependencies
         run: |
-          cd webapp-fork/api
           npm install
 
       - name: Run Nodejs tests
@@ -35,12 +34,10 @@ jobs:
           DB_USERNAME: ${{secrets.DB_USERNAME}}
           PORT: ${{secrets.PORT}}
         run: |
-          cd webapp-fork/api
           npm run test
 
       - name: Zip Node.js application
         run: |
-          cd webapp-fork/api
           npm run zip
           echo $(pwd)
           echo $(ls-la)
@@ -63,11 +60,11 @@ jobs:
 
       - name: initialize  packer
         run: |
-          cd webapp-fork/api/packer
+          cd packer
           packer init packer.pkr.hcl
 
       - name: Build packer file
         run: |
           FILE="packer.pkr.hcl"
-          cd webapp-fork/api/packer
+          cd packer
           packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "PORT=${{secrets.PORT}}" -var "DB_HOST=${{secrets.DB_HOST}}" $FILE || exit 1

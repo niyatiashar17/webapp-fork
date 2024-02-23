@@ -14,8 +14,8 @@ Environment=DB_HOST='$DB_HOST'
 Environment=DB_DATABASE='$DB_DATABASE'
 Environment=DB_USERNAME='$DB_USERNAME'
 Environment=PORT='$PORT'
-WorkingDirectory=/opt/webapp/webapp-fork/api
-ExecStart=/usr/bin/node /opt/webapp/webapp-fork/api/index.js
+WorkingDirectory=/opt/webapp
+ExecStart=/usr/bin/node /opt/webapp/index.js
 Restart=on-failure
 RestartSec=3
 StandardOutput=append:/var/log/webapp_output.log

@@ -31,18 +31,17 @@ jobs:
       
       - name: Zip Node.js application
         run: |
-          cd webapp-fork/api
           npm run zip
           echo $(pwd)
           echo $(ls-la)
       - name: initialize  packer
         run: |
-          cd webapp-fork/api/packer
+          cd packer
           packer init packer.pkr.hcl
 
       - name: Run packer fmt
         run: |
-          cd webapp-fork/api/packer
+          cd packer
           packer fmt -check packer.pkr.hcl
           if [ $? -ne 0 ]; then
             echo "packer fmt has made changes to the packer template. Please run 'packer fmt' locally and commit the changes."
@@ -52,7 +51,7 @@ jobs:
       - name: Run packer validate
         run: |
           FILE="packer.pkr.hcl"
-          cd webapp-fork/api/packer/
+          cd packer/
           packer validate -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "PORT=${{secrets.PORT}}" -var "DB_HOST=${{secrets.DB_HOST}}" $FILE || exit 1
           if [ $? -ne 0 ]; then
               echo "packer validate failed to validate the packer template. Please fix the template."

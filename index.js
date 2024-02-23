@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 
-const healthCheck = require("../api/src/router/router");
+const healthCheck = require("./src/router/router");
 const userrouter = require("./src/router/user");
 const bodyParser = require("body-parser");
 const { sequelize01, users } = require("./src/models/user");

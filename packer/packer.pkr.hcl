@@ -50,7 +50,7 @@ build {
   // }
 
   provisioner "file" {
-    source      = "/home/runner/work/webapp/webapp/webapp-fork/api/webapp.zip"
+    source      = "/home/runner/work/webapp/webapp/webapp.zip"
     destination = "/tmp/webapp.zip"
   }
   // provisioner "file"{
