@@ -9,12 +9,8 @@ After=network.target
 Type=simple
 User=csye6225
 Group=csye6225
-Environment=DB_PASSWORD='$DB_PASSWORD'
-Environment=DB_HOST='$DB_HOST'
-Environment=DB_DATABASE='$DB_DATABASE'
-Environment=DB_USERNAME='$DB_USERNAME'
-Environment=PORT='$PORT'
 WorkingDirectory=/opt/webapp
+ExecStartPre=/bin/bash -c "while [ ! -f /opt/test ]; do sleep 1; done"
 ExecStart=/usr/bin/node /opt/webapp/index.js
 Restart=on-failure
 RestartSec=3
