@@ -1,4 +1,4 @@
-node index.js
+
 
 npm install (node_modules)  
  //change the folder name in index.js file
