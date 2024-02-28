@@ -6,11 +6,12 @@ Description=Node.js Application
 After=network.target
 
 [Service]
+EnvironmentFile=/opt/webapp/.env
 Type=simple
 User=csye6225
 Group=csye6225
 WorkingDirectory=/opt/webapp
-ExecStartPre=/bin/bash -c "while [ ! -f /opt/test ]; do sleep 1; done"
+ExecStartPre=/bin/bash -c "while [ ! -f /opt/text.txt ]; do sleep 1; done"
 ExecStart=/usr/bin/node /opt/webapp/index.js
 Restart=on-failure
 RestartSec=3
