@@ -38,29 +38,13 @@ build {
   }
 
 
-
-
-  // provisioner "file" {
-  //   source      = "./install_mysql.sh"
-  //   destination = "/tmp/install_mysql.sh"
-  // }
-
-  // provisioner "file" {
-  //   source      = "./install_nodejs.sh"
-  //   destination = "/tmp/install_nodejs.sh"
-  // }
-
   provisioner "file" {
     source      = "/home/runner/work/webapp/webapp/webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-  // provisioner "file"{
-  //   source      = "./permission.sh"
-  //   destination = "/tmp/permission.sh"
-  // }
 
   provisioner "shell" {
-    scripts = ["./install_nodejs.sh", "./install_mysql.sh", "./installations.sh", "./service.sh", "./permission.sh"]
+    scripts = ["./install_nodejs.sh", "./install_mysql.sh", "./installations.sh", "./service.sh", "./permission.sh", "./install_ops_agent.sh"]
     environment_vars = [
       "DB_HOST=${var.DB_HOST}",
       "DB_PASSWORD=${var.DB_PASSWORD}",
