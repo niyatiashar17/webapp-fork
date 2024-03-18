@@ -33,7 +33,7 @@ describe("userrouter", () => {
   describe("Post endpoint", () => {
     it("should create account and validate", async () => {
       try {
-        await request01.post("/v1/user").send(accountData).expect(200);
+        await request01.post("/v1/user").send(accountData).expect(201);
 
         //.set("Authorization", authHeader)
         //.end((error, res) => {
@@ -60,7 +60,7 @@ describe("userrouter", () => {
         const data = await request01
           .get("/v1/user/self")
           .set("Authorization", authHeader)
-          .expect(201);
+          .expect(200);
 
         // .end((getError, getRes) => {
         //   if (getError) {
