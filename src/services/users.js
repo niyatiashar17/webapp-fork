@@ -1,8 +1,9 @@
 const { users } = require("../models/user");
 const bcrypt = require("bcrypt");
-const logger = require('/src/logger/logger');
+const logger = require("../logger/logger");
 
 const getUserService = async (req, res) => {
+  logger.info("Getting user service");
   try {
     return res.status(200).json({
       id: req.userdetails.id,
@@ -13,6 +14,7 @@ const getUserService = async (req, res) => {
       account_updated: req.userdetails.account_updated,
     });
   } catch (error) {
+    logger.error("Error getting user service", error);
     return res.status(400).json({
       error,
     });
@@ -21,6 +23,7 @@ const getUserService = async (req, res) => {
 
 async function postUserService(req, res) {
   try {
+    logger.info("Posting user service");
     const { username, password, firstName, lastName, ...extraFields } =
       req.body;
     const userdetails = req.body;
@@ -50,7 +53,7 @@ async function postUserService(req, res) {
       account_updated: user.account_updated,
     });
   } catch (error) {
-    logger.error(error);
+    logger.error("Error in posting user service", error);
     //console.error(error);
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json({ error: error.message });
@@ -64,6 +67,7 @@ async function postUserService(req, res) {
 
 const putUserService = async (req, res) => {
   try {
+    logger.info("Putting user service");
     const { password, firstName, lastName, ...extraFields } = req.body;
     const userdetails = req.body;
     if (Object.keys(extraFields).length > 0) {
@@ -93,6 +97,7 @@ const putUserService = async (req, res) => {
     );
     return res.status(204).json({ message: "Details of the user updated" });
   } catch (error) {
+    logger.error("Error in putting user service", error);
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json(error.errors[0].message);
     } else if (error.name === "SequelizeUniqueConstraintError") {

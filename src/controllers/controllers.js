@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const log = required('/src/logger/logger.js');
+const logger = require("../logger/logger");
 
 const sequelize01 = new Sequelize(
   process.env.DB_DATABASE,
@@ -13,6 +13,7 @@ const sequelize01 = new Sequelize(
 );
 
 const handleGetRequest = async (req, res) => {
+  logger.info("Handling GET request");
   res.setHeader("Cache-control", "no-cache,no-store, must-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -25,6 +26,7 @@ const handleGetRequest = async (req, res) => {
         Object.keys(req.body).length > 0 ||
         Object.keys(req.params).length > 0
       ) {
+        logger.info("Bad request");
         res.status(400).send();
         return;
       }
@@ -39,6 +41,7 @@ const handleGetRequest = async (req, res) => {
       //console.log("Not Connected");
     }
   } else {
+    logger.info("Method not allowed");
     res.status(405).send();
   }
 };

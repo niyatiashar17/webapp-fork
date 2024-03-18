@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const logger = required("/src/logger/logger.js");
+const logger = require("../logger/logger");
 
 const sequelize01 = new Sequelize(
   process.env.DB_DATABASE,
@@ -115,7 +115,8 @@ users
     //console.log("Table Created");
   })
   .catch((err) => {
-    logger.error("Table Not Created, err");
+    console.log(err);
+    logger.error("Table Not Created");
     //console.log("Table Not Created", err);
   });
 

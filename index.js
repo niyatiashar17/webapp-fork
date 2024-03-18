@@ -5,7 +5,7 @@ const healthCheck = require("./src/router/router");
 const userrouter = require("./src/router/user");
 const bodyParser = require("body-parser");
 const { sequelize01, users } = require("./src/models/user");
-const logger = require('./logger'); // Import the logger
+const logger = require("./src/logger/logger"); // Import the logger
 
 const app = express();
 const port = process.env.PORT;
@@ -71,7 +71,8 @@ app.use("/healthz", healthCheck);
 app.use("/v1/user", userrouter);
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  logger.info(`Server is running at http://localhost:${port}`);
+  //console.log(`Server is running at http://localhost:${port}`);
 });
 
 module.exports = app;
