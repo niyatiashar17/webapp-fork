@@ -60,7 +60,7 @@ describe("userrouter", () => {
         const data = await request01
           .get("/v1/user/self")
           .set("Authorization", authHeader)
-          .expect(200);
+          .expect(201);
 
         // .end((getError, getRes) => {
         //   if (getError) {
