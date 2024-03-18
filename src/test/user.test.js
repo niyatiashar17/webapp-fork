@@ -11,7 +11,7 @@ const request01 = supertest(app);
 //const expect = chai.expect;
 //require("mysql2/node_modules/iconv-lite").encodingExists("foo");
 const accountData = {
-  username: "karan123@northeastern.edu",
+  username: "aws123@northeastern.edu",
   firstName: "Test",
   lastName: "Updated",
   password: "Test@1234",
@@ -61,7 +61,6 @@ describe("userrouter", () => {
           .get("/v1/user/self")
           .set("Authorization", authHeader)
           .expect(200);
-          
 
         // .end((getError, getRes) => {
         //   if (getError) {

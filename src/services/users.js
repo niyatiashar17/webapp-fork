@@ -1,5 +1,6 @@
 const { users } = require("../models/user");
 const bcrypt = require("bcrypt");
+const logger = require('/src/logger/logger');
 
 const getUserService = async (req, res) => {
   try {
@@ -40,7 +41,7 @@ async function postUserService(req, res) {
     userdetails.password = await bcrypt.hash(userdetails.password, 10);
     const user = await users.create(userdetails);
 
-    return res.status(200).json({
+    return res.status(201).json({
       id: user.id,
       username: user.username,
       firstName: user.firstName,
@@ -49,7 +50,8 @@ async function postUserService(req, res) {
       account_updated: user.account_updated,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
+    //console.error(error);
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json({ error: error.message });
     } else if (error.name === "SequelizeUniqueConstraintError") {

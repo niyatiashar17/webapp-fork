@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+const log = required('/src/logger/logger.js');
 
 const sequelize01 = new Sequelize(
   process.env.DB_DATABASE,
@@ -29,11 +30,13 @@ const handleGetRequest = async (req, res) => {
       }
 
       await sequelize01.authenticate();
-      console.log("Database connected!");
+      logger.info("Database Connected");
+      //console.log("Database connected!");
       res.status(200).send();
     } catch (err) {
       res.status(503).send();
-      console.log("Not Connected");
+      logger.error("Not Connected");
+      //console.log("Not Connected");
     }
   } else {
     res.status(405).send();

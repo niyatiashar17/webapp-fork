@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
+const logger = required("/src/logger/logger.js");
 
 const sequelize01 = new Sequelize(
   process.env.DB_DATABASE,
@@ -110,10 +111,12 @@ users.beforeUpdate((user, options) => {
 users
   .sync({ force: false })
   .then(() => {
-    console.log("Table Created");
+    logger.info("Table Created");
+    //console.log("Table Created");
   })
   .catch((err) => {
-    console.log("Table Not Created", err);
+    logger.error("Table Not Created, err");
+    //console.log("Table Not Created", err);
   });
 
 module.exports = { users, sequelize01 };

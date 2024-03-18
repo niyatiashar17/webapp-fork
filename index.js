@@ -5,6 +5,7 @@ const healthCheck = require("./src/router/router");
 const userrouter = require("./src/router/user");
 const bodyParser = require("body-parser");
 const { sequelize01, users } = require("./src/models/user");
+const logger = require('./logger'); // Import the logger
 
 const app = express();
 const port = process.env.PORT;
