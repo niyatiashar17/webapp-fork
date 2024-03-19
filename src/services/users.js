@@ -37,12 +37,14 @@ async function postUserService(req, res) {
         /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\S+$).{8,20}$/
       )
     ) {
+      logger.warn("Invalid password format");
       return res.status(400).json({
         error: "Invalid Password",
       });
     }
     userdetails.password = await bcrypt.hash(userdetails.password, 10);
     const user = await users.create(userdetails);
+    logger.debug(`User created: ${user.username}`);
 
     return res.status(201).json({
       id: user.id,
@@ -71,6 +73,7 @@ const putUserService = async (req, res) => {
     const { password, firstName, lastName, ...extraFields } = req.body;
     const userdetails = req.body;
     if (Object.keys(extraFields).length > 0) {
+      logger.warn("Extra fields are not allowed");
       return res.status(400).json({ error: "No extra attributes allowed" });
     }
     if (
@@ -78,6 +81,7 @@ const putUserService = async (req, res) => {
         /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\S+$).{8,20}$/
       )
     ) {
+      logger.warn("Invalid password format");
       return res.status(400).end({ error: "Invalid Password" });
     }
 
@@ -95,6 +99,7 @@ const putUserService = async (req, res) => {
         where: { username: req.userdetails.username },
       }
     );
+    logger.debug(`User updated: ${user.username}`);
     return res.status(204).json({ message: "Details of the user updated" });
   } catch (error) {
     logger.error("Error in putting user service", error);
