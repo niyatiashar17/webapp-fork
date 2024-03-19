@@ -14,7 +14,7 @@ const getUserService = async (req, res) => {
       account_updated: req.userdetails.account_updated,
     });
   } catch (error) {
-    logger.error("Error getting user service", error);
+    //logger.error("Error getting user service", error);
     return res.status(400).json({
       error,
     });

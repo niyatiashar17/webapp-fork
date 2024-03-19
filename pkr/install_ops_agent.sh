@@ -12,7 +12,7 @@ logging:
     my-app-receiver:
       type: files
       include_paths:
-        - /tmp/myapp.log
+        - /var/log/webapp/combined.log
       record_log_file_path: true
   processors:
     my-app-processor:
