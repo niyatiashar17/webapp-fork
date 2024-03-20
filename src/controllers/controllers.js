@@ -26,22 +26,21 @@ const handleGetRequest = async (req, res) => {
         Object.keys(req.body).length > 0 ||
         Object.keys(req.params).length > 0
       ) {
-        logger.info("Bad request", { severity: "INFO" });
+        logger.warn("Bad request", { severity: "WARNING" });
         res.status(400).send();
         return;
       }
 
       await sequelize01.authenticate();
-      logger.info("Health API Connected",{severity:'INFO'});
-      //console.log("Database connected!");
+      logger.info("Health API Connected", { severity: "INFO" });
+
       res.status(200).send();
     } catch (err) {
       res.status(503).send();
-      logger.error("Not Connected",{severity:'ERROR'});
-      //console.log("Not Connected");
+      logger.error("Not Connected", { severity: "ERROR" });
     }
   } else {
-    logger.info("Method not allowed",{severity:'INFO'});
+    logger.warn("Method not allowed", { severity: "WARNING" });
     res.status(405).send();
   }
 };
