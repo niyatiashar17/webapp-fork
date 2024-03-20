@@ -14,7 +14,7 @@ const postUserController = async (req, res) => {
 };
 
 const getUserController = async (req, res) => {
-  logger.info('Getting user controller');
+  logger.info('Getting user controller',{severity : 'INFO'});
  
     if (req.headers["content-length"]?.length > 0) {
       logger.warn('Request should not have body',{severity : 'WARNING'});

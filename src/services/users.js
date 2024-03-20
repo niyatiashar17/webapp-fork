@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const logger = require("../logger/logger");
 
 const getUserService = async (req, res) => {
-  logger.info("Getting user service");
+  logger.info("Getting user service",{severity : 'INFO'});
   try {
       res.status(200).json({
       id: req.userdetails.id,
