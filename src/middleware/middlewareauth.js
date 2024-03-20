@@ -2,9 +2,11 @@ var express = require("express");
 var app = express();
 const bcrypt = require("bcrypt");
 const { users } = require("../models/user");
+const logger = require("../logger/logger");
 
 const middlewareauthen = async (req, res, next) => {
   if (!req.get("Authorization")) {
+    logger.warn('No authorization header present');
     var error = new Error("Not Authenticated");
     res.status(401).set("WWW-Authenticate", "Basic");
     next(error);
@@ -22,6 +24,7 @@ const middlewareauthen = async (req, res, next) => {
     const userdetails = await users.findOne({ where: { username } });
     //console.log(password, userdetails);
     if (!userdetails) {
+      logger.warn(`User not found: ${username}`);
       var error = new Error("User Not Found");
       res.status(401).set("WWW-Authenticate", "Basic").end();
     } else {
@@ -31,9 +34,11 @@ const middlewareauthen = async (req, res, next) => {
         userdetails.password
       );
       if (passwordMatches) {
+        logger.info(`User authenticated: ${username}`);
         req.userdetails = userdetails;
         next();
       } else {
+        logger.error(`Authentication failed for user: ${username}`);
         res.status(401).end();
       }
     }

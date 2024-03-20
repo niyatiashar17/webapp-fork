@@ -28,6 +28,9 @@ async function postUserService(req, res) {
       req.body;
     const userdetails = req.body;
     if (Object.keys(extraFields).length > 0) {
+      logger.warn(
+        "User Name, Password, First Name, Last Name are only allowed"
+      );
       return res.status(400).json({
         error: "User Name, Password, First Name, Last Name are only allowed",
       });
@@ -44,7 +47,7 @@ async function postUserService(req, res) {
     }
     userdetails.password = await bcrypt.hash(userdetails.password, 10);
     const user = await users.create(userdetails);
-    logger.debug(`User created: ${user.username}`);
+    //logger.debug(`User created: ${user.username}`);
 
     return res.status(201).json({
       id: user.id,
@@ -55,13 +58,15 @@ async function postUserService(req, res) {
       account_updated: user.account_updated,
     });
   } catch (error) {
-    logger.error("Error in posting user service", error);
     //console.error(error);
     if (error.name === "SequelizeValidationError") {
+      logger.error(`Error in posting user service ${error.message}`);
       return res.status(400).json({ error: error.message });
     } else if (error.name === "SequelizeUniqueConstraintError") {
+      logger.error(`Error in posting user service`,{error} );
       return res.status(409).json(error);
     } else {
+      logger.error(`Error in posting user service Cannot create user`);
       return res.status(400).send("Cannot create user");
     }
   }
@@ -99,7 +104,7 @@ const putUserService = async (req, res) => {
         where: { username: req.userdetails.username },
       }
     );
-    logger.debug(`User updated: ${user.username}`);
+    //logger.debug(`User updated: ${user.username}`);
     return res.status(204).json({ message: "Details of the user updated" });
   } catch (error) {
     logger.error("Error in putting user service", error);

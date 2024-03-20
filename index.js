@@ -62,6 +62,7 @@ app.use(async (req, res, next) => {
 
 app.use(async (req, res, next) => {
   if (Object.keys(req.query).length > 0 || Object.keys(req.params).length > 0) {
+    logger.warn("Query parameters are not supported")
     res.status(400).json({ message: "Query or Params not allowed" });
   } else {
     next();

@@ -11,7 +11,7 @@ const postUserController = async (req, res) => {
   logger.info('Posting user controller');
   try {
     await postUserService(req, res);
-    logger.info('User posted successfully');
+    //logger.info('User posted successfully');
   } catch (error) {
     logger.error('Error in posting user controller', error);
   }
