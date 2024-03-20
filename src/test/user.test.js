@@ -22,10 +22,10 @@ describe("HealthCheck", () => {
   describe("/healthz endpoint", () => {
     it("should return a 200 status when the database is available", async () => {
       try {
-        logger.info("Health check initiated");
+        logger.info("Health check initiated",{severity: 'INFO'});
         await request01.get("/healthz").expect(200);
       } catch (error) {
-        logger.error("Health check failed", error);
+        logger.error(`Health check failed ${error}`,{severity: 'ERROR'});
         throw error;
       }
     });
@@ -36,9 +36,9 @@ describe("userrouter", () => {
   describe("Post endpoint", () => {
     it("should create account and validate", async () => {
       try {
-        logger.info("Account creation initiated");
+        logger.info("Account creation initiated",{severity: 'INFO'});
         await request01.post("/v1/user").send(accountData).expect(201);
-        logger.info("Account created successfully");
+        logger.info("Account created successfully",{severity: 'INFO'});
 
         //.set("Authorization", authHeader)
         //.end((error, res) => {
@@ -62,12 +62,12 @@ describe("userrouter", () => {
             `${accountData.username}:${accountData.password}`
           ).toString("base64");
 
-        logger.info("Validating account existence");
+        logger.info("Validating account existence",{severity: 'INFO'});
         const data = await request01
           .get("/v1/user/self")
           .set("Authorization", authHeader)
           .expect(200);
-        logger.info("Account validation successful");
+        logger.info("Account validation successful",{severity: 'INFO'});
 
         // .end((getError, getRes) => {
         //   if (getError) {
@@ -78,7 +78,7 @@ describe("userrouter", () => {
         // expect(getRes.body.firstName).toEqual(accountData.firstName);
         // expect(getRes.body.lastName).toEqual(accountData.lastName);
       } catch (error) {
-        logger.error("Account creation/validation failed", error);
+        logger.error(`Account creation/validation failed ${error}`, {severity: 'ERROR'});
         throw error;
       }
     });
@@ -99,29 +99,29 @@ describe("userrouter", () => {
           Buffer.from(
             `${accountData.username}:${accountData.password}`
           ).toString("base64");
-        logger.info("Account update initiated");
+        logger.info("Account update initiated", {severity: 'INFO'});
         await request01
           .put("/v1/user/self")
           .set("Authorization", authHeader1)
           .send(updatedData)
           .expect(204);
-        logger.info("Account updated successfully");
+        logger.info("Account updated successfully", {severity: 'INFO'});
         const authHeader =
           "Basic " +
           Buffer.from(
             `${accountData.username}:${updatedData.password}`
           ).toString("base64");
 
-        logger.info("Validating account update");
+        logger.info("Validating account update", {severity: 'INFO'});
         const data = await request01
           .get("/v1/user/self")
           .set("Authorization", authHeader)
           .expect(200);
-        logger.info("Account update validation successful");
+        logger.info("Account update validation successful", {severity: 'INFO'});
 
         // This will inform root suite about the completion of tests
       } catch (error) {
-        logger.error("Account update/validation failed", error);
+        logger.error(`Account update/validation failed ${error}`, {severity:'ERROR'});
         throw error;
       }
     });

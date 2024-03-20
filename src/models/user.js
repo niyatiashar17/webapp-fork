@@ -111,12 +111,12 @@ users.beforeUpdate((user, options) => {
 users
   .sync({ force: false })
   .then(() => {
-    logger.info("Table Created");
+    logger.info("Table Created",{severity:'INFO'});
     //console.log("Table Created");
   })
   .catch((err) => {
     console.log(err);
-    logger.error("Table Not Created");
+    logger.error("Table Not Created",{severity:'ERROR'});
     //console.log("Table Not Created", err);
   });
 

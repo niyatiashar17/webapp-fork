@@ -5,7 +5,7 @@ const logger = require("../logger/logger");
 const getUserService = async (req, res) => {
   logger.info("Getting user service");
   try {
-    return res.status(200).json({
+      res.status(200).json({
       id: req.userdetails.id,
       username: req.userdetails.username,
       firstName: req.userdetails.firstName,
@@ -13,6 +13,8 @@ const getUserService = async (req, res) => {
       account_created: req.userdetails.account_created,
       account_updated: req.userdetails.account_updated,
     });
+    logger.info('User fetched successfully',{severity:'INFO'});
+    return;
   } catch (error) {
     //logger.error("Error getting user service", error);
     return res.status(400).json({
@@ -23,14 +25,14 @@ const getUserService = async (req, res) => {
 
 async function postUserService(req, res) {
   try {
-    logger.info("Posting user service");
+    logger.info("Posting user service",{severity:'INFO'});
     const { username, password, firstName, lastName, ...extraFields } =
       req.body;
     const userdetails = req.body;
     if (Object.keys(extraFields).length > 0) {
       logger.warn(
         "User Name, Password, First Name, Last Name are only allowed"
-      );
+      ),{severity:'WARNING'};
       return res.status(400).json({
         error: "User Name, Password, First Name, Last Name are only allowed",
       });
@@ -40,7 +42,7 @@ async function postUserService(req, res) {
         /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\S+$).{8,20}$/
       )
     ) {
-      logger.warn("Invalid password format");
+      logger.warn("Invalid password format",{severity:'WARNING'});
       return res.status(400).json({
         error: "Invalid Password",
       });
@@ -60,13 +62,13 @@ async function postUserService(req, res) {
   } catch (error) {
     //console.error(error);
     if (error.name === "SequelizeValidationError") {
-      logger.error(`Error in posting user service ${error.message}`);
+      logger.error(`Error in posting user service ${error.message}`,{severity:'ERROR'});
       return res.status(400).json({ error: error.message });
     } else if (error.name === "SequelizeUniqueConstraintError") {
-      logger.error(`Error in posting user service`,{error} );
+      logger.error(`Error in posting user service ${error}`,{severity:'ERROR'} );
       return res.status(409).json(error);
     } else {
-      logger.error(`Error in posting user service Cannot create user`);
+      logger.error(`Error in posting user service Cannot create user`,{severity:'ERROR'});
       return res.status(400).send("Cannot create user");
     }
   }
@@ -74,11 +76,11 @@ async function postUserService(req, res) {
 
 const putUserService = async (req, res) => {
   try {
-    logger.info("Putting user service");
+    logger.info("Putting user service",{severity:'INFO'});
     const { password, firstName, lastName, ...extraFields } = req.body;
     const userdetails = req.body;
     if (Object.keys(extraFields).length > 0) {
-      logger.warn("Extra fields are not allowed");
+      logger.warn("Extra fields are not allowed",{severity:'WARNING'});
       return res.status(400).json({ error: "No extra attributes allowed" });
     }
     if (
@@ -86,7 +88,7 @@ const putUserService = async (req, res) => {
         /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\S+$).{8,20}$/
       )
     ) {
-      logger.warn("Invalid password format");
+      logger.warn("Invalid password format",{severity:'WARNING'});
       return res.status(400).end({ error: "Invalid Password" });
     }
 
@@ -105,14 +107,17 @@ const putUserService = async (req, res) => {
       }
     );
     //logger.debug(`User updated: ${user.username}`);
+    logger.info('User updated successfully',{severity : 'INFO'});
     return res.status(204).json({ message: "Details of the user updated" });
   } catch (error) {
-    logger.error("Error in putting user service", error);
     if (error.name === "SequelizeValidationError") {
+      logger.error(`Error in putting user service ${error.errors[0].message}`,  {severity:'ERROR'});
       return res.status(400).json(error.errors[0].message);
     } else if (error.name === "SequelizeUniqueConstraintError") {
+      logger.error(`Error in putting user service ${error}`, {severity:'ERROR'});
       return res.status(409).json(error);
     } else {
+      logger.error("Cannot update user",{severity:'ERROR'})
       return res.status(400).send("Cannot update user");
     }
   }

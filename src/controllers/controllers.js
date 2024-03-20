@@ -13,7 +13,7 @@ const sequelize01 = new Sequelize(
 );
 
 const handleGetRequest = async (req, res) => {
-  logger.info("Handling GET request");
+  logger.info("Handling GET request", { severity: "INFO" });
   res.setHeader("Cache-control", "no-cache,no-store, must-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -26,22 +26,22 @@ const handleGetRequest = async (req, res) => {
         Object.keys(req.body).length > 0 ||
         Object.keys(req.params).length > 0
       ) {
-        logger.info("Bad request");
+        logger.info("Bad request", { severity: "INFO" });
         res.status(400).send();
         return;
       }
 
       await sequelize01.authenticate();
-      logger.info("Database Connected");
+      logger.info("Database Connected",{severity:'INFO'});
       //console.log("Database connected!");
       res.status(200).send();
     } catch (err) {
       res.status(503).send();
-      logger.error("Not Connected");
+      logger.error("Not Connected",{severity:'ERROR'});
       //console.log("Not Connected");
     }
   } else {
-    logger.info("Method not allowed");
+    logger.info("Method not allowed",{severity:'INFO'});
     res.status(405).send();
   }
 };
