@@ -6,11 +6,17 @@ const userrouter = require("./src/router/user");
 const bodyParser = require("body-parser");
 const { sequelize01, users } = require("./src/models/user");
 const logger = require("./src/logger/logger"); // Import the logger
+const expressWinston = require("express-winston");
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(bodyParser.json());
+app.use(
+  expressWinston.logger({
+    winstonInstance: logger,
+  })
+);
 
 //middleware
 app.use(async (req, res, next) => {
@@ -62,7 +68,7 @@ app.use(async (req, res, next) => {
 
 app.use(async (req, res, next) => {
   if (Object.keys(req.query).length > 0 || Object.keys(req.params).length > 0) {
-    logger.warn("Query parameters are not supported",{severity: 'WARNING'});
+    logger.warn("Query parameters are not supported", { severity: "WARNING" });
     res.status(400).json({ message: "Query or Params not allowed" });
   } else {
     next();
@@ -72,7 +78,9 @@ app.use("/healthz", healthCheck);
 app.use("/v1/user", userrouter);
 
 app.listen(port, () => {
-  logger.info(`Server is running at http://localhost:${port}`, {severity: 'INFO'});
+  logger.info(`Server is running at http://localhost:${port}`, {
+    severity: "INFO",
+  });
   //console.log(`Server is running at http://localhost:${port}`);
 });
 
