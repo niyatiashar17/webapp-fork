@@ -32,7 +32,7 @@ const handleGetRequest = async (req, res) => {
       }
 
       await sequelize01.authenticate();
-      logger.info("Database Connected",{severity:'INFO'});
+      logger.info("Health API Connected",{severity:'INFO'});
       //console.log("Database connected!");
       res.status(200).send();
     } catch (err) {
