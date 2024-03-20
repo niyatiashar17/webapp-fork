@@ -24,7 +24,7 @@ logging:
       fields:
         severity:
           copy_from: jsonPayload.severity
-          default_values: 'INFO'
+          default_value: 'INFO'
   service:
     pipelines:
       default_pipeline:

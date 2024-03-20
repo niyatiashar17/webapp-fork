@@ -32,7 +32,7 @@ async function postUserService(req, res) {
     if (Object.keys(extraFields).length > 0) {
       logger.warn(
         "User Name, Password, First Name, Last Name are only allowed"
-      ),{severity:'WARNING'};
+        ,{severity:'WARNING'});
       return res.status(400).json({
         error: "User Name, Password, First Name, Last Name are only allowed",
       });
@@ -65,7 +65,7 @@ async function postUserService(req, res) {
       logger.error(`Error in posting user service ${error.message}`,{severity:'ERROR'});
       return res.status(400).json({ error: error.message });
     } else if (error.name === "SequelizeUniqueConstraintError") {
-      logger.error(`Error in posting user service ${error}`,{severity:'ERROR'} );
+      logger.error("Provide a unique username",{severity:'ERROR'} );
       return res.status(409).json(error);
     } else {
       logger.error(`Error in posting user service Cannot create user`,{severity:'ERROR'});
