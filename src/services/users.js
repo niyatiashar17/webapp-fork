@@ -101,7 +101,7 @@ async function postUserService(req, res) {
       logger.error(`Error in posting user service Cannot create user`, {
         severity: "ERROR",
       });
-      return res.status(400).send("Cannot create user");
+      return res.status(400).json({ error: error });
     }
   }
 }

@@ -22,11 +22,11 @@ describe("HealthCheck", () => {
   describe("/healthz endpoint", () => {
     it("should return a 200 status when the database is available", async () => {
       try {
-        logger.debug("Debugging Health Check",{severity: 'DEBUG'});
-        logger.info("Health check initiated",{severity: 'INFO'});
+        logger.debug("Debugging Health Check", { severity: "DEBUG" });
+        logger.info("Health check initiated", { severity: "INFO" });
         await request01.get("/healthz").expect(200);
       } catch (error) {
-        logger.error(`Health check failed ${error}`,{severity: 'ERROR'});
+        logger.error(`Health check failed ${error}`, { severity: "ERROR" });
         throw error;
       }
     });
@@ -37,10 +37,12 @@ describe("userrouter", () => {
   describe("Post endpoint", () => {
     it("should create account and validate", async () => {
       try {
-        logger.debug("Debugging Initiating  account creation",{severity: 'DEBUG'});
-        logger.info("Account creation initiated",{severity: 'INFO'});
+        logger.debug("Debugging Initiating  account creation", {
+          severity: "DEBUG",
+        });
+        logger.info("Account creation initiated", { severity: "INFO" });
         await request01.post("/v1/user").send(accountData).expect(201);
-        logger.info("Account created successfully",{severity: 'INFO'});
+        logger.info("Account created successfully", { severity: "INFO" });
 
         //.set("Authorization", authHeader)
         //.end((error, res) => {
@@ -64,12 +66,12 @@ describe("userrouter", () => {
             `${accountData.username}:${accountData.password}`
           ).toString("base64");
 
-        logger.info("Validating account existence",{severity: 'INFO'});
+        logger.info("Validating account existence", { severity: "INFO" });
         const data = await request01
           .get("/v1/user/self")
           .set("Authorization", authHeader)
           .expect(200);
-        logger.info("Account validation successful",{severity: 'INFO'});
+        logger.info("Account validation successful", { severity: "INFO" });
 
         // .end((getError, getRes) => {
         //   if (getError) {
@@ -80,8 +82,10 @@ describe("userrouter", () => {
         // expect(getRes.body.firstName).toEqual(accountData.firstName);
         // expect(getRes.body.lastName).toEqual(accountData.lastName);
       } catch (error) {
-        console.log(error)
-        logger.error(`Account creation/validation failed ${error}`, {severity: 'ERROR'});
+        console.log(error);
+        logger.error(`Account creation/validation failed ${error}`, {
+          severity: "ERROR",
+        });
         throw error;
       }
     });
@@ -102,29 +106,33 @@ describe("userrouter", () => {
           Buffer.from(
             `${accountData.username}:${accountData.password}`
           ).toString("base64");
-        logger.info("Account update initiated", {severity: 'INFO'});
+        logger.info("Account update initiated", { severity: "INFO" });
         await request01
           .put("/v1/user/self")
           .set("Authorization", authHeader1)
           .send(updatedData)
           .expect(204);
-        logger.info("Account updated successfully", {severity: 'INFO'});
+        logger.info("Account updated successfully", { severity: "INFO" });
         const authHeader =
           "Basic " +
           Buffer.from(
             `${accountData.username}:${updatedData.password}`
           ).toString("base64");
 
-        logger.info("Validating account update", {severity: 'INFO'});
+        logger.info("Validating account update", { severity: "INFO" });
         const data = await request01
           .get("/v1/user/self")
           .set("Authorization", authHeader)
           .expect(200);
-        logger.info("Account update validation successful", {severity: 'INFO'});
+        logger.info("Account update validation successful", {
+          severity: "INFO",
+        });
 
         // This will inform root suite about the completion of tests
       } catch (error) {
-        logger.error(`Account update/validation failed ${error}`, {severity:'ERROR'});
+        logger.error(`Account update/validation failed ${error}`, {
+          severity: "ERROR",
+        });
         throw error;
       }
     });
