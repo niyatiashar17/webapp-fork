@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const logger = require("../logger/logger");
 const { PubSub } = require("@google-cloud/pubsub");
 if (process.env.NODE_ENV !== "test") {
-  const pubSubClient = new PubSub({
-    projectId: "csye-6225-terraform-415001",
+  var pubSubClient = new PubSub({
+    projectId: "csye-dev-418517",
   });
 }
 
@@ -73,6 +73,7 @@ async function postUserService(req, res) {
     //await pubSubClient.topic(topicName).publish(dataBuffer);
 
     if (process.env.NODE_ENV !== "test") {
+      console.log("test");
       const messageId = await pubSubClient
         .topic(topicName)
         .publishMessage({ data: dataBuffer });
@@ -98,9 +99,12 @@ async function postUserService(req, res) {
       logger.error("Provide a unique username", { severity: "ERROR" });
       return res.status(409).json(error);
     } else {
-      logger.error(`Error in posting user service Cannot create user:${error}`, {
-        severity: "ERROR",
-      });
+      logger.error(
+        `Error in posting user service Cannot create user:${error}`,
+        {
+          severity: "ERROR",
+        }
+      );
       return res.status(400).json({ error: error });
     }
   }

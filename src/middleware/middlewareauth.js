@@ -5,6 +5,7 @@ const { users } = require("../models/user");
 const logger = require("../logger/logger");
 
 const middlewareauthen = async (req, res, next) => {
+  console.log("query params");
   if (!req.get("Authorization")) {
     logger.warn("No authorization header present", { severity: "WARNING" });
     var error = new Error("Not Authenticated");
