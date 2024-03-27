@@ -67,7 +67,7 @@ app.use(async (req, res, next) => {
 //   });
 
 app.use(async (req, res, next) => {
-  if (Object.keys(req.query).length > 0 || Object.keys(req.params).length > 0) {
+  if ((Object.keys(req.query).length > 0 || Object.keys(req.params).length > 0) && !req.originalUrl.includes("/v1/user/verify_users")) {
     logger.warn("Query parameters are not supported", { severity: "WARNING" });
     res.status(400).json({ message: "Query or Params not allowed" });
   } else {
@@ -78,6 +78,7 @@ app.use("/healthz", healthCheck);
 app.use("/v1/user", userrouter);
 
 app.listen(port, () => {
+  logger.debug("Debugging server", { severity: "DEBUG" });
   logger.info(`Server is running at http://localhost:${port}`, {
     severity: "INFO",
   });

@@ -5,6 +5,7 @@ const {
   postUserController,
   getUserController,
   putUserController,
+  getVerifyUserController
 } = require("../controllers/user");
 const { middlewareauthen } = require("../middleware/middlewareauth");
 
@@ -16,6 +17,11 @@ router.post("/", (req, res, next) => {
 router.get("/self", middlewareauthen, (req, res, next) => {
   logger.info('GET /self - User data request received',{severity:'INFO'});
   getUserController(req, res, next);
+});
+
+router.get("/verify_users", middlewareauthen, (req, res, next) => {
+  logger.info('GET /verify_users - Email link verified',{severity:'INFO'});
+  getVerifyUserController(req, res, next);
 });
 
 router.put("/self", middlewareauthen, (req, res, next) => {
@@ -32,5 +38,7 @@ router.all("/self", (req, res) => {
   logger.warn('Invalid method request received at /self',{severity:'WARNING'});
   res.status(405).send();
 });
+
+
 
 module.exports = router;

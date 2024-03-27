@@ -17,6 +17,7 @@
   "author": "Niyati",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/pubsub": "^4.3.3",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "chai": "^5.1.0",

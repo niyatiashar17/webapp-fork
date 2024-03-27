@@ -12,6 +12,23 @@ const sequelize01 = new Sequelize(
   }
 );
 
+const metadata_users = sequelize01.define(
+  "metadata_users",
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      readOnly: true,
+    },
+    timestamp: {
+      type: DataTypes.DATE,
+      readOnly: true,
+    },
+  },
+  { timestamps: false }
+);
+
 const users = sequelize01.define(
   "users",
   {
@@ -89,6 +106,12 @@ const users = sequelize01.define(
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
     },
+    is_verified: {
+      readOnly: true,
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   },
   { timestamps: false, createdAt: false, updatedAt: false }
 );
@@ -111,13 +134,25 @@ users.beforeUpdate((user, options) => {
 users
   .sync({ force: false })
   .then(() => {
-    logger.info("Table Created",{severity:'INFO'});
+    logger.info("Table User Created", { severity: "INFO" });
     //console.log("Table Created");
   })
   .catch((err) => {
     console.log(err);
-    logger.error("Table Not Created",{severity:'ERROR'});
+    logger.error("Table User Not Created", { severity: "ERROR" });
     //console.log("Table Not Created", err);
   });
 
-module.exports = { users, sequelize01 };
+metadata_users
+  .sync({ force: false })
+  .then(() => {
+    logger.info("Table metadata_users Created", { severity: "INFO" });
+    //console.log("Table Created");
+  })
+  .catch((err) => {
+    console.log(err);
+    logger.error("Table metadata_users Not Created", { severity: "ERROR" });
+    //console.log("Table Not Created", err);
+  });
+
+module.exports = { users, metadata_users, sequelize01 };

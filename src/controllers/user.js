@@ -5,6 +5,7 @@ const {
   postUserService,
   getUserService,
   putUserService,
+  getVerifyUserService
 } = require("../services/users");
 
 const postUserController = async (req, res) => {
@@ -24,9 +25,14 @@ const getUserController = async (req, res) => {
     }
 };
 
+const getVerifyUserController = async (req, res) => {
+  logger.info('Verifying email link',{severity : 'INFO'});
+  await getVerifyUserService(req, res);
+};
+
 const putUserController = async (req, res) => {
   logger.info('Putting user controller',{severity : 'INFO'});
     await putUserService(req, res);
   
 };
-module.exports = { postUserController, getUserController, putUserController };
+module.exports = { postUserController, getUserController, putUserController , getVerifyUserController};
