@@ -88,7 +88,7 @@ async function postUserService(req, res) {
       account_updated: user.account_updated,
     });
   } catch (error) {
-    //console.error(error);
+    console.error(error);
     if (error.name === "SequelizeValidationError") {
       logger.error(`Error in posting user service ${error.message}`, {
         severity: "ERROR",
