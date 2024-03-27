@@ -22,6 +22,7 @@ describe("HealthCheck", () => {
   describe("/healthz endpoint", () => {
     it("should return a 200 status when the database is available", async () => {
       try {
+        logger.debug("Debugging Health Check",{severity: 'DEBUG'});
         logger.info("Health check initiated",{severity: 'INFO'});
         await request01.get("/healthz").expect(200);
       } catch (error) {
@@ -36,6 +37,7 @@ describe("userrouter", () => {
   describe("Post endpoint", () => {
     it("should create account and validate", async () => {
       try {
+        logger.debug("Debugging Initiating  account creation",{severity: 'DEBUG'});
         logger.info("Account creation initiated",{severity: 'INFO'});
         await request01.post("/v1/user").send(accountData).expect(201);
         logger.info("Account created successfully",{severity: 'INFO'});
