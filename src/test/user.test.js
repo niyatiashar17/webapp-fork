@@ -80,6 +80,7 @@ describe("userrouter", () => {
         // expect(getRes.body.firstName).toEqual(accountData.firstName);
         // expect(getRes.body.lastName).toEqual(accountData.lastName);
       } catch (error) {
+        console.log(error)
         logger.error(`Account creation/validation failed ${error}`, {severity: 'ERROR'});
         throw error;
       }
