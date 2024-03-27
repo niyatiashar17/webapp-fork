@@ -107,7 +107,6 @@ const users = sequelize01.define(
       defaultValue: Sequelize.NOW,
     },
     is_verified: {
-      readOnly: true,
       type: Sequelize.BOOLEAN,
       defaultValue: false,
       allowNull: false,
