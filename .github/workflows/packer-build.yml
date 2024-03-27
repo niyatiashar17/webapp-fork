@@ -38,6 +38,7 @@ jobs:
           DB_DATABASE: ${{secrets.DB_DATABASE}}
           DB_USERNAME: ${{secrets.DB_USERNAME}}
           PORT: ${{secrets.PORT}}
+          NODE_ENV: ${{secrets.NODE_ENV}}
         run: |
           npm run test
 
