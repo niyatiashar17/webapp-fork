@@ -98,7 +98,7 @@ async function postUserService(req, res) {
       logger.error("Provide a unique username", { severity: "ERROR" });
       return res.status(409).json(error);
     } else {
-      logger.error(`Error in posting user service Cannot create user`, {
+      logger.error(`Error in posting user service Cannot create user:${error}`, {
         severity: "ERROR",
       });
       return res.status(400).json({ error: error });
