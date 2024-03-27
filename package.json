@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test1": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "test": "mocha src/test/user.test.js --exit",
+    "start": "set NODE_ENV=prod && nodemon index.js",
+    "test": "NODE_ENV=test && mocha src/test/user.test.js --exit",
     "zip": "zip -r webapp.zip . -x \\*node_modules\\* \\*.git\\* \\*.env\\*"
   },
   "keywords": [

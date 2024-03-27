@@ -1,10 +1,12 @@
-const { users } = require("../models/user");
+const { users, metadata_users } = require("../models/user");
 const bcrypt = require("bcrypt");
 const logger = require("../logger/logger");
 const { PubSub } = require("@google-cloud/pubsub");
-const pubSubClient = new PubSub({
-  projectId: "csye-6225-terraform-415001",
-});
+if (process.env.NODE_ENV !== "test") {
+  const pubSubClient = new PubSub({
+    projectId: "csye-6225-terraform-415001",
+  });
+}
 
 const getUserService = async (req, res) => {
   logger.info("Getting user service", { severity: "INFO" });
@@ -58,22 +60,23 @@ async function postUserService(req, res) {
 
     //Publish a message to the Pubsub topic after the user is created
     const topicName = "verify_email";
-    const data = JSON.stringify({id: user.id,
+    const data = JSON.stringify({
+      id: user.id,
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
       account_created: user.account_created,
-      account_updated: user.account_updated});
+      account_updated: user.account_updated,
+    });
     const dataBuffer = Buffer.from(data);
 
     //await pubSubClient.topic(topicName).publish(dataBuffer);
-    try {
+
+    if (process.env.NODE_ENV !== "test") {
       const messageId = await pubSubClient
         .topic(topicName)
         .publishMessage({ data: dataBuffer });
       console.log(`Message ${messageId} published.`);
-    } catch (error) {
-      console.error(`Error publishing message: ${error}`);
     }
 
     return res.status(201).json({
@@ -103,8 +106,6 @@ async function postUserService(req, res) {
   }
 }
 
-
-
 const getVerifyUserService = async (req, res) => {
   try {
     logger.info("getVerifyUserService: Verifying user", { severity: "INFO" });
@@ -118,7 +119,7 @@ const getVerifyUserService = async (req, res) => {
       return res.status(400).json({ error: "Id is required" });
     }
 
-    const user = await User_Metadata.findOne({
+    const user = await metadata_users.findOne({
       where: {
         id: id,
       },
@@ -142,7 +143,7 @@ const getVerifyUserService = async (req, res) => {
       }
     }
 
-    await User.update(
+    await users.update(
       {
         is_verified: true,
       },
@@ -165,7 +166,6 @@ const getVerifyUserService = async (req, res) => {
     return res.status(400).json({ error: error });
   }
 };
-
 
 const putUserService = async (req, res) => {
   try {
@@ -220,9 +220,19 @@ const putUserService = async (req, res) => {
   }
 };
 
+const getTimeDifference = (dbTimeStamp) => {
+  const currUTCTime = new Date(
+    new Date().toISOString().slice(0, 19).replace("T", " ")
+  ).getTime();
+  dbTimeStamp = new Date(dbTimeStamp).getTime();
+
+  const diff = Math.abs(currUTCTime - dbTimeStamp) / 1000 / 60;
+  return diff > 2;
+};
+
 module.exports = {
   getUserService,
   postUserService,
   putUserService,
-  getVerifyUserService
+  getVerifyUserService,
 };

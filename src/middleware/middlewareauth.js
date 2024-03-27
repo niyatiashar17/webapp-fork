@@ -6,7 +6,7 @@ const logger = require("../logger/logger");
 
 const middlewareauthen = async (req, res, next) => {
   if (!req.get("Authorization")) {
-    logger.warn('No authorization header present',{severity:'WARNING'});
+    logger.warn("No authorization header present", { severity: "WARNING" });
     var error = new Error("Not Authenticated");
     res.status(401).set("WWW-Authenticate", "Basic");
     next(error);
@@ -24,9 +24,9 @@ const middlewareauthen = async (req, res, next) => {
     const userdetails = await users.findOne({ where: { username } });
     //console.log(password, userdetails);
     if (!userdetails) {
-      logger.warn(`User not found: ${username}`,{severity:'WARNING'});
+      logger.warn(`User not found: ${username}`, { severity: "WARNING" });
       var error = new Error("User Not Found");
-      res.status(401).set("WWW-Authenticate", "Basic").end();
+      return res.status(401).set("WWW-Authenticate", "Basic").end();
     } else {
       //console.log(password, userdetails);
       const passwordMatches = await bcrypt.compare(
@@ -34,12 +34,18 @@ const middlewareauthen = async (req, res, next) => {
         userdetails.password
       );
       if (passwordMatches) {
-        logger.info(`User authenticated: ${username}`,{severity:'INFO'});
+        logger.info(`User authenticated: ${username}`, { severity: "INFO" });
+        if (!userdetails.is_verified && process.env.NODE_ENV !== "test") {
+          logger.error(`User not verified: ${username}`, { severity: "ERROR" });
+          return res.status(401).json({ message: "User not verified" });
+        }
         req.userdetails = userdetails;
         next();
       } else {
-        logger.error(`Authentication failed for user: ${username}`,{severity:'ERROR'});
-        res.status(401).end();
+        logger.error(`Authentication failed for user: ${username}`, {
+          severity: "ERROR",
+        });
+        return res.status(401).end();
       }
     }
   }

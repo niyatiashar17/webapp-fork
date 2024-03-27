@@ -19,8 +19,8 @@ router.get("/self", middlewareauthen, (req, res, next) => {
   getUserController(req, res, next);
 });
 
-router.get("/verify_users", middlewareauthen, (req, res, next) => {
-  logger.info('GET /verify_users - Email link verified',{severity:'INFO'});
+router.get("/verify_user", middlewareauthen, (req, res, next) => {
+  logger.info('GET /verify_user - Email link verified',{severity:'INFO'});
   getVerifyUserController(req, res, next);
 });
 
