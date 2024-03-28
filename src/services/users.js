@@ -73,7 +73,6 @@ async function postUserService(req, res) {
     //await pubSubClient.topic(topicName).publish(dataBuffer);
 
     if (process.env.NODE_ENV !== "test") {
-      console.log("test");
       const messageId = await pubSubClient
         .topic(topicName)
         .publishMessage({ data: dataBuffer });
@@ -121,6 +120,19 @@ const getVerifyUserService = async (req, res) => {
         severity: "ERROR",
       });
       return res.status(400).json({ error: "Id is required" });
+    }
+
+    const userDetails = await users.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (userDetails.is_verified) {
+      logger.error("getVerifyUserService: User has been already verified", {
+        severity: "ERROR",
+      });
+      return res.status(400).json({ error: "User has already been verified" });
     }
 
     const user = await metadata_users.findOne({
