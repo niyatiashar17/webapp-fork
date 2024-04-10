@@ -58,16 +58,16 @@ jobs:
               exit 1
           fi
 
-      - name: Build packer file
-        run: |
-          FILE="packer.pkr.hcl"
-          cd pkr
-          packer build -force -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_HOST=${{secrets.DB_HOST}}" -var "PORT=${{secrets.PORT}}" $FILE || exit 1
+      # - name: Build packer file
+      #   run: |
+      #     FILE="packer.pkr.hcl"
+      #     cd pkr
+      #     packer build -force -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_HOST=${{secrets.DB_HOST}}" -var "PORT=${{secrets.PORT}}" $FILE || exit 1
 
-      - name: Get Latest Image ID
-        run: |
-          latest_image_id=$(gcloud compute images list --sort-by=creationTimestamp --format='value(id)' --limit=1)
-          echo "latest_image_id=$latest_image_id" >> $GITHUB_ENV
+      # - name: Get Latest Image ID
+      #   run: |
+      #     latest_image_id=$(gcloud compute images list --sort-by=creationTimestamp --format='value(id)' --limit=1)
+      #     echo "latest_image_id=$latest_image_id" >> $GITHUB_ENV
 
       - name: Create instance template
         id: create-template
@@ -89,24 +89,24 @@ jobs:
               --boot-disk-size=40 \
               --boot-disk-type=pd-ssd \
               --boot-disk-device-name=terraform-instance \
-              --network=csye6225-vpc \
+              --network=csye-6225-terraform-vpc \
               --subnet=webapp \
               --service-account=ops-agent@${{secrets.GCP_PROJECT_ID}}.iam.gserviceaccount.com \
               --scopes=https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/cloudkms \
               --no-boot-disk-auto-delete \
               --boot-disk-kms-key=$key_ring_url \
-              --metadata startup-script='#!/bin/bash
+              --metadata startup-script="#!/bin/bash
               if [ ! -f /opt/webapp/.env ]; then
-                  sudo echo "DB_HOST=$sql_hostname" | sudo tee -a /opt/webapp/.env
-                  sudo echo "DB_PASSWORD=$sql_password" | sudo tee -a /opt/webapp/.env
-                  sudo echo "DB_DATABASE=webapp" | sudo tee -a /opt/webapp/.env
-                  sudo echo "DB_USERNAME=webapp" | sudo tee -a /opt/webapp/.env
-                  sudo echo "PORT=8080" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"DB_HOST='$sql_hostname'\" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"DB_PASSWORD='$sql_password'\" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"DB_DATABASE=webapp\" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"DB_USERNAME=webapp\" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"PORT=8080\" | sudo tee -a /opt/webapp/.env
                   
               fi
               sudo touch /opt/finish.txt
               sudo chown -R csye6225:csye6225 /opt/webapp/
-              sudo chmod 700 /opt/webapp/' \
+              sudo chmod 700 /opt/webapp/" \
               --quiet
 
       - name: Assign new template to instance group manager
