@@ -37,7 +37,7 @@ const middlewareauthen = async (req, res, next) => {
         logger.info(`User authenticated: ${username}`, { severity: "INFO" });
         if (!userdetails.is_verified && process.env.NODE_ENV !== "test") {
           logger.error(`User not verified: ${username}`, { severity: "ERROR" });
-          return res.status(401).json({ message: "User not verified" });
+          return res.status(403).json({ message: "User not verified" });
         }
         req.userdetails = userdetails;
         next();
