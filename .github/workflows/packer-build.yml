@@ -73,4 +73,72 @@ jobs:
         run: |
           FILE="packer.pkr.hcl"
           cd pkr
-          packer build -force -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "PORT=${{secrets.PORT}}" -var "DB_HOST=${{secrets.DB_HOST}}" $FILE || exit 1
+          packer build -force -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "DB_PASSWORD=${{secrets.DB_PASSWORD}}" -var "DB_DATABASE=${{secrets.DB_DATABASE}}" -var "DB_USERNAME=${{secrets.DB_USERNAME}}" -var "DB_HOST=${{secrets.DB_HOST}}" -var "PORT=${{secrets.PORT}}" $FILE || exit 1
+  
+      - name: Get Latest Image ID
+        run: |
+          latest_image_id=$(gcloud compute images list --sort-by=creationTimestamp --format='value(id)' --limit=1)
+          echo "latest_image_id=$latest_image_id" >> $GITHUB_ENV
+  
+      - name: Create instance template
+        id: create-template
+        run: |
+          TEMPLATE_NAME="terraform-instance-$(date +%Y%m%d%H%M%S)"
+          echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
+
+          sql_hostname=$(gcloud secrets versions access latest --secret=sql-host)
+          sql_password=$(gcloud secrets versions access latest --secret=sql-password)
+          key_ring_url=$(gcloud secrets versions access latest --secret=vm-crypto-key)
+
+
+          gcloud compute instance-templates create $TEMPLATE_NAME \
+              --machine-type=e2-standard-2 \
+              --instance-template-region=us-east1 \
+              --region=us-east1 \
+              --tags=webapp \
+              --image=csye-centos8 \
+              --boot-disk-size=20 \
+              --boot-disk-type=pd-ssd \
+              --boot-disk-device-name=terraform-instance \
+              --network=csye-6225-terraform-vpc \
+              --subnet=webapp \
+              --service-account=ops-agent@${{secrets.GCP_PROJECT_ID}}.iam.gserviceaccount.com \
+              --scopes=https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/cloudkms \
+              --no-boot-disk-auto-delete \
+              --boot-disk-kms-key=$key_ring_url \
+              --metadata startup-script="#!/bin/bash
+              if [ ! -f /opt/webapp/.env ]; then
+                sudo echo \"DB_HOST=$sql_hostname\" >> /opt/webapp/.env
+                sudo echo \"DB_PASSWORD=$sql_password\" >> /opt/webapp/.env
+                sudo echo \"DB_DATABASE=webapp\" >> /opt/webapp/.env
+                sudo echo \"DB_USERNAME=webapp\" >> /opt/webapp/.env
+                sudo echo \"PORT=8080\" >> /opt/webapp/.env
+                sudo echo \"NODE_ENV=prod\" >> /opt/webapp/.env
+                  
+              fi
+              sudo touch /opt/text.txt
+              sudo chown -R csye6225:csye6225 /opt/webapp/
+              sudo chmod 700 /opt/webapp/" \
+              --quiet
+  
+      - name: Assign new template to instance group manager
+        run: |
+          gcloud compute instance-groups managed set-instance-template instance-group-manager \
+              --project=${{secrets.GCP_PROJECT_ID}} \
+              --template=projects/${{ secrets.GCP_PROJECT_ID }}/regions/us-east1/instanceTemplates/${{env.TEMPLATE_NAME}} \
+              --region=us-east1
+  
+      - name: Update instances inside instance group manager
+        run: |
+          gcloud compute instance-groups managed rolling-action start-update instance-group-manager \
+              --version='template=projects/${{ secrets.GCP_PROJECT_ID }}/regions/us-east1/instanceTemplates/${{env.TEMPLATE_NAME}}' \
+              --region=us-east1 \
+              --quiet
+  
+      - name: Wait for instances to be updated and running
+        run: |
+          gcloud config set project ${{secrets.GCP_PROJECT_ID}}
+          gcloud compute instance-groups managed wait-until instance-group-manager \
+              --region=us-east1 \
+              --version-target-reached
+  
