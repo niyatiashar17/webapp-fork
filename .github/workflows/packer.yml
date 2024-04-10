@@ -85,7 +85,7 @@ jobs:
               --instance-template-region=us-east1 \
               --region=us-east1 \
               --tags=webapp \
-              --image=csye-centos-8 \
+              --image=csye-centos8 \
               --boot-disk-size=40 \
               --boot-disk-type=pd-ssd \
               --boot-disk-device-name=terraform-instance \
@@ -97,8 +97,8 @@ jobs:
               --boot-disk-kms-key=$key_ring_url \
               --metadata startup-script="#!/bin/bash
               if [ ! -f /opt/webapp/.env ]; then
-                  sudo echo \"DB_HOST='$sql_hostname'\" | sudo tee -a /opt/webapp/.env
-                  sudo echo \"DB_PASSWORD='$sql_password'\" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"DB_HOST=$sql_hostname\" | sudo tee -a /opt/webapp/.env
+                  sudo echo \"DB_PASSWORD=$sql_password\" | sudo tee -a /opt/webapp/.env
                   sudo echo \"DB_DATABASE=webapp\" | sudo tee -a /opt/webapp/.env
                   sudo echo \"DB_USERNAME=webapp\" | sudo tee -a /opt/webapp/.env
                   sudo echo \"PORT=8080\" | sudo tee -a /opt/webapp/.env
