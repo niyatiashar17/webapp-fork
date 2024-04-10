@@ -86,7 +86,7 @@ jobs:
               --region=us-east1 \
               --tags=webapp \
               --image=csye-centos-8-1 \
-              --image-project=projects/csye-dev-418517/global/images/csye-centos-8-1 \  # Add this line
+              --image-project=projects/csye-dev-418517/global/images/csye-centos-8-1 \  
               --boot-disk-size=40 \
               --boot-disk-type=pd-ssd \
               --boot-disk-device-name=terraform-instance \
