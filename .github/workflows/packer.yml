@@ -106,7 +106,9 @@ jobs:
               fi
               sudo touch /opt/finish.txt
               sudo chown -R csye6225:csye6225 /opt/webapp/ /var/log/webapp/
+              sudo chown -R csye6225:csye6225 /etc/systemd/system/webapp.service
               sudo chmod 700 /opt/webapp/ /var/log/webapp/
+              sudo chmod 700 /etc/systemd/system/webapp.service
               --quiet
 
       - name: Assign new template to instance group manager
