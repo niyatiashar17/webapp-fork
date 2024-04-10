@@ -97,15 +97,15 @@ jobs:
               --boot-disk-kms-key=$key_ring_url \
               --metadata startup-script="#!/bin/bash
               if [ ! -f /opt/webapp/.env ]; then
-                  sudo echo \"DB_HOST=$sql_hostname\" >> /opt/webapp/.env
-                  sudo echo \"DB_PASSWORD=$sql_password\" >> /opt/webapp/.env
-                  sudo echo \"DB_DATABASE=webapp\" >> /opt/webapp/.env
-                  sudo echo \"DB_USERNAME=webapp\" >> /opt/webapp/.env
-                  sudo echo \"PORT=8080\" >> /opt/webapp/.env
-                  sudo echo \"NODE_ENV=prod\" >> /opt/webapp/.env
+                sudo echo \"DB_HOST=$sql_hostname\" >> /opt/webapp/.env
+                sudo echo \"DB_PASSWORD=$sql_password\" >> /opt/webapp/.env
+                sudo echo \"DB_DATABASE=webapp\" >> /opt/webapp/.env
+                sudo echo \"DB_USERNAME=webapp\" >> /opt/webapp/.env
+                sudo echo \"PORT=8080\" >> /opt/webapp/.env
+                sudo echo \"NODE_ENV=prod\" >> /opt/webapp/.env
                   
               fi
-              sudo touch /opt/finish.txt
+              sudo touch /opt/text.txt
               sudo chown -R csye6225:csye6225 /opt/webapp/
               sudo chmod 700 /opt/webapp/" \
               --quiet
