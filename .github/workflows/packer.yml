@@ -1,7 +1,6 @@
 name: Packer-Validate
 on:
   pull_request:
-    types: [closed]
     branches:
       - main
 
@@ -14,12 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      #Run unit tests
-      - name: Run unit tests
-        run: |
-          npm install --save-dev mocha
-          npm test
 
       - name: Set up Cloud SDK
         uses: google-github-actions/auth@v2
@@ -65,98 +58,119 @@ jobs:
               exit 1
           fi
 
-      - name: Build Application Artifact(s)
+      - name: Build packer file
         run: |
-          npm install
-          npm run zip
+          FILE="setup.pkr.hcl"
+          cd packer
+          packer build -force -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "MYSQL_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" -var "MYSQL_DATABASENAME=${{secrets.MYSQL_DATABASENAME}}" -var "MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" -var "MYSQL_HOSTNAME=${{secrets.MYSQL_HOSTNAME}}" -var "SALT_ROUNDS=${{secrets.SALT_ROUNDS}}" -var "PORT=${{secrets.PORT}}" $FILE || exit 1
 
-      - name: Build machine images
-        run: |
-          # Upgrade OS packages
-          sudo apt-get update && sudo apt-get upgrade -y
-
-          # Install dependencies (python, node.js, etc.)
-          sudo apt-get install -y nodejs
-
-          # Install application dependencies from package.json
-          npm install
-
-          # # Install application dependencies (pip install for Python)
-          # pip3 install -r requirements.txt
-
-          # Set up the application by copying the application artifacts and the configuration files
-          mkdir /app
-          cp -r . /app
-          cp config.json /app
-
-          # Configure the application to start automatically when VM is launched
-          echo "NODE_ENV=prod && nodemon index.js" >> ~/.bashrc
-
-          # Build machine image using Packer
-          packer build packer.pkr.hcl
-
-          # Configure Google Cloud credentials
-      - uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
-          service_account_key: ${{ secrets.GOOGLE_SA_KEY }}
-          export_default_credentials: true
-
-          # Get the latest image ID
       - name: Get Latest Image ID
         run: |
           latest_image_id=$(gcloud compute images list --sort-by=creationTimestamp --format='value(id)' --limit=1)
           echo "latest_image_id=$latest_image_id" >> $GITHUB_ENV
 
-      # Create a new Instance Template version
-      - name: Create New Instance Template
+      - name: Create instance template
+        id: create-template
         run: |
-          gcloud beta compute instance-templates create webapp-instance-${{ github.sha }} \
-          --project=${{ secrets.GOOGLE_PROJECT_ID }} \
-          --machine-type=e2-standard-2 \
-          --network-interface=network-tier=STANDARD,subnet=webapp-subnet \
-          --instance-template-region=us-east4 \
-          --metadata=startup-script='#!/bin/bash
-          echo "spring.datasource.url=jdbc:mysql://10.15.0.2:3306/webapp?createDatabaseIfNotExist=true" >> /opt/csye6225/application.properties
-          echo "spring.datasource.username=webapp" >> /opt/csye6225/application.properties
-          echo "spring.datasource.password=${{ secrets.DB_PASSWORD }}" >> /opt/csye6225/application.properties
-          echo "spring.jpa.hibernate.ddl-auto=update" >> /opt/csye6225/application.properties
-          echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect" >> /opt/csye6225/application.properties
-          echo "projectId=${{ secrets.GOOGLE_PROJECT_ID }}" >> /opt/csye6225/application.properties
-          echo "topicId=verify_email" >> /opt/csye6225/application.properties' \
-          --maintenance-policy=MIGRATE \
-          --provisioning-model=STANDARD \
-          --service-account=webapp-sa@${{ secrets.GOOGLE_PROJECT_ID }}.iam.gserviceaccount.com \
-          --scopes=https://www.googleapis.com/auth/cloud-platform \
-          --region=us-east4 \
-          --tags=webapp-instance \
-          --create-disk=auto-delete=yes,boot=yes,device-name=persistent-disk-0,image=projects/${{ secrets.GOOGLE_PROJECT_ID }}/global/images/${{ env.latest_image_id }},mode=rw,size=20,type=pd-standard \
-          --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring \
-          --reservation-affinity=any
+          TEMPLATE_NAME="terraform-instance-$(date +%Y%m%d%H%M%S)"
+          echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
 
-      # Set the new Instance Template for the Managed Instance Group
-      - name: Set New Template for the Managed Instance Group
-        run: |
-          gcloud compute instance-groups managed set-instance-template webapp-instance-group --instance-template=webapp-instance-${{ github.sha }} --zone=us-east4-c
+          sql_hostname=$(gcloud secrets versions access latest --secret=sql-host)
+          sql_password=$(gcloud secrets versions access latest --secret=sql-password)
+          key_ring_url=$(gcloud secrets versions access latest --secret=vm-crypto-key)
 
-      # Start a rolling update for the Managed Instance Group
-      - name: Start Rolling Update
-        run: |
-          gcloud compute instance-groups managed rolling-action start-update webapp-instance-group --version=template=webapp-instance-${{ github.sha }} --max-surge=5 --zone=us-east4-c
 
-      # Monitor the rolling update progress
-      - name: Monitor Rolling Update
+          gcloud compute instance-templates create $TEMPLATE_NAME \
+              --machine-type=e2-standard-2 \
+              --instance-template-region=us-east1 \
+              --region=us-east1 \
+              --tags=webapp \
+              --image=csye-centos-8-1 \
+              --boot-disk-size=40 \
+              --boot-disk-type=pd-ssd \
+              --boot-disk-device-name=terraform-instance \
+              --network=csye6225-vpc \
+              --subnet=webapp \
+              --service-account=ops-agent@${{secrets.GCP_PROJECT_ID}}.iam.gserviceaccount.com \
+              --scopes=https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/cloudkms \
+              --no-boot-disk-auto-delete \
+              --boot-disk-kms-key=$key_ring_url \
+              --metadata startup-script='#!/bin/bash
+              if [ ! -f /opt/webapp/.env ]; then
+                  sudo echo "MYSQL_HOSTNAME=$sql_hostname" | sudo tee -a /opt/webapp/.env
+                  sudo echo "MYSQL_PASSWORD=$sql_password" | sudo tee -a /opt/webapp/.env
+                  sudo echo "MYSQL_DATABASENAME=webapp" | sudo tee -a /opt/webapp/.env
+                  sudo echo "MYSQL_USERNAME=webapp" | sudo tee -a /opt/webapp/.env
+                  sudo echo "PORT=8080" | sudo tee -a /opt/webapp/.env
+                  sudo echo "SALT_ROUNDS=10" | sudo tee -a /opt/webapp/.env
+              fi
+              sudo touch /opt/finish.txt
+              sudo chown -R csye6225:csye6225 /opt/webapp/
+              sudo chmod 700 /opt/webapp/' \
+              --quiet
+
+      - name: Assign new template to instance group manager
         run: |
-          while true; do
-          status=$(gcloud compute instance-groups managed describe webapp-instance-group --zone=us-east4-c --format='value(currentAction)')
-          if [ "$status" == "NONE" ]; then
-            echo "Rolling update completed successfully"
-            break
-          elif [ "$status" == "ROLLING_OUT" ]; then
-            echo "Rolling update in progress"
-          else
-            echo "Error occurred during rolling update: $status"
-            exit 1
-          fi
-            sleep 10
-          done
+          gcloud compute instance-groups managed set-instance-template instance-group-manager \
+              --project=${{secrets.GCP_PROJECT_ID}} \
+              --template=projects/${{ secrets.GCP_PROJECT_ID }}/regions/us-east1/instanceTemplates/${{env.TEMPLATE_NAME}} \
+              --region=us-east1
+
+
+              - name: Build packer file
+              run: |
+                FILE="setup.pkr.hcl"
+                cd packer
+                packer build -force -var "credentials=$GOOGLE_APPLICATION_CREDENTIALS" -var "project_id=${{secrets.GCP_PROJECT_ID}}" -var "MYSQL_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}}" -var "MYSQL_DATABASENAME=${{secrets.MYSQL_DATABASENAME}}" -var "MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" -var "MYSQL_HOSTNAME=${{secrets.MYSQL_HOSTNAME}}" -var "SALT_ROUNDS=${{secrets.SALT_ROUNDS}}" -var "PORT=${{secrets.PORT}}" $FILE || exit 1
+
+            - name: Get Latest Image ID
+              run: |
+                latest_image_id=$(gcloud compute images list --sort-by=creationTimestamp --format='value(id)' --limit=1)
+                echo "latest_image_id=$latest_image_id" >> $GITHUB_ENV
+
+            - name: Create instance template
+              id: create-template
+              run: |
+                TEMPLATE_NAME="webapp-template-$(date +%Y%m%d%H%M%S)"
+                echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
+
+                sql_hostname=$(gcloud secrets versions access latest --secret=sql-host)
+                sql_password=$(gcloud secrets versions access latest --secret=sql-password)
+                key_ring_url=$(gcloud secrets versions access latest --secret=vm-crypto-key)
+
+
+                gcloud compute instance-templates create $TEMPLATE_NAME \
+                    --machine-type=e2-standard-2 \
+                    --instance-template-region=us-east1 \
+                    --region=us-east1 \
+                    --tags=webapp \
+                    --image=csye-centos-8-1 \
+                    --boot-disk-size=40 \
+                    --boot-disk-type=pd-ssd \
+                    --boot-disk-device-name=terraform-instance \
+                    --network=csye6225-vpc \
+                    --subnet=webapp \
+                    --service-account=ops-agent@${{secrets.GCP_PROJECT_ID}}.iam.gserviceaccount.com \
+                    --scopes=https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/cloudkms \
+                    --no-boot-disk-auto-delete \
+                    --boot-disk-kms-key=$key_ring_url \
+                    --metadata startup-script='#!/bin/bash
+                    if [ ! -f /opt/webapp/.env ]; then
+                        sudo echo "MYSQL_HOSTNAME=$sql_hostname" | sudo tee -a /opt/webapp/.env
+                        sudo echo "MYSQL_PASSWORD=$sql_password" | sudo tee -a /opt/webapp/.env
+                        sudo echo "MYSQL_DATABASENAME=webapp" | sudo tee -a /opt/webapp/.env
+                        sudo echo "MYSQL_USERNAME=webapp" | sudo tee -a /opt/webapp/.env
+                        sudo echo "PORT=8080" | sudo tee -a /opt/webapp/.env
+                        sudo echo "SALT_ROUNDS=10" | sudo tee -a /opt/webapp/.env
+                    fi
+                    sudo touch /opt/finish.txt
+                    sudo chown -R csye6225:csye6225 /opt/webapp/
+                    sudo chmod 700 /opt/webapp/' \
+                    --quiet
+
+      - name: Assign new template to instance group manager
+        run: |
+          gcloud compute instance-groups managed set-instance-template instance-group-manager \
+              --project=${{secrets.GCP_PROJECT_ID}} \
+              --template=projects/${{ secrets.GCP_PROJECT_ID }}/regions/us-east1/instanceTemplates/${{env.TEMPLATE_NAME}} \
+              --region=us-east1
