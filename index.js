@@ -75,7 +75,7 @@ app.use(async (req, res, next) => {
   }
 });
 app.use("/healthz", healthCheck);
-app.use("/v1/user", userrouter);
+app.use("/v2/user", userrouter);
 
 app.listen(port, () => {
   logger.debug("Debugging server", { severity: "DEBUG" });

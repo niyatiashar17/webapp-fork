@@ -41,7 +41,7 @@ describe("userrouter", () => {
           severity: "DEBUG",
         });
         logger.info("Account creation initiated", { severity: "INFO" });
-        await request01.post("/v1/user").send(accountData).expect(201);
+        await request01.post("/v2/user").send(accountData).expect(201);
         logger.info("Account created successfully", { severity: "INFO" });
 
         //.set("Authorization", authHeader)
@@ -68,7 +68,7 @@ describe("userrouter", () => {
 
         logger.info("Validating account existence", { severity: "INFO" });
         const data = await request01
-          .get("/v1/user/self")
+          .get("/v2/user/self")
           .set("Authorization", authHeader)
           .expect(200);
         logger.info("Account validation successful", { severity: "INFO" });
@@ -108,7 +108,7 @@ describe("userrouter", () => {
           ).toString("base64");
         logger.info("Account update initiated", { severity: "INFO" });
         await request01
-          .put("/v1/user/self")
+          .put("/v2/user/self")
           .set("Authorization", authHeader1)
           .send(updatedData)
           .expect(204);
@@ -121,7 +121,7 @@ describe("userrouter", () => {
 
         logger.info("Validating account update", { severity: "INFO" });
         const data = await request01
-          .get("/v1/user/self")
+          .get("/v2/user/self")
           .set("Authorization", authHeader)
           .expect(200);
         logger.info("Account update validation successful", {
