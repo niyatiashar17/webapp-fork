@@ -52,8 +52,6 @@ npm install nodemon --save (package.json)
 npm install body-parser --save
 npm install sequelize --save
 
-//Google cloud setup
-// curl https://sdk.cloud.google.com | bash
 
 const { version } = require("winston")
 
